@@ -4,7 +4,7 @@ import json
 
 
 # Parse arguments
-parser = argparse.ArgumentParser(description='Convert ARCE data split to symbolic or text jsonl inputs compatible with models.')
+parser = argparse.ArgumentParser(description='Convert ACRE data split to symbolic or text jsonl inputs compatible with models.')
 parser.add_argument('input_path')
 parser.add_argument('output_path')
 group = parser.add_mutually_exclusive_group(required=True)
