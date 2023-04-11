@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-# Logical-and-abstract-reasoning
-
-## Datasets & Benchmarks
-<h4 id="2.1.1">Datasets & Benchmarks</h4>
-=======
 # Logical and Abstract Reasoning
 
 Repository for the evaluation of Large Language Models on logical and abstract reasoning tasks
@@ -12,7 +6,6 @@ Repository for the evaluation of Large Language Models on logical and abstract r
 
 
 ## Datasets & Benchmarks
->>>>>>> main
 
 <table>
   <tr>
@@ -37,23 +30,13 @@ Repository for the evaluation of Large Language Models on logical and abstract r
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
       <td align="center"> <a href="https://www.ijcai.org/proceedings/2020/0501.pdf">paper</a> <br /> <a href="https://github.com/lgw863/LogiQA-dataset">project</a>  </td>
-<<<<<<< HEAD
-      <td align="center">Logoical reasoning reading comprehension</td>
-=======
       <td align="center">Logical reasoning reading comprehension</td>
->>>>>>> main
   </tr>
   <tr>
       <td align="center">LogiQA V2</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
       <td align="center"> <a href="https://github.com/openai/evals/pull/470">project</a>  </td>
-<<<<<<< HEAD
-      <td align="center">Logoical reasoning reading comprehension</td>
-  </tr>
-</table>
-
-=======
       <td align="center">Logical reasoning reading comprehension</td>
   </tr>
   
@@ -148,4 +131,3 @@ Repository for the evaluation of Large Language Models on logical and abstract r
 
 
 
->>>>>>> main
