@@ -6,7 +6,7 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 from tqdm import tqdm
 # load_model_name = "./llama_7B_hf/llama-7b/"
-load_model_name = "./qiming_alpaca_7B/"
+load_model_name = "../../qiming_alpaca_7B/"
 flag = "reclor"
 
 def load_model(model_name, eight_bit=0, device_map="auto"):
