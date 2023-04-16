@@ -8,3 +8,4 @@ tensorboardX
 datasets
 evaluate
 accelerate
+openai
