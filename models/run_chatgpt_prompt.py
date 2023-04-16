@@ -2,7 +2,7 @@ import os
 import openai
 import json
 import pandas as pd
-
+from tqdm import tqdm
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 flag = "reclor"
@@ -10,7 +10,7 @@ response_list = {'context':[],'question':[],'optionA':[], 'optionB':[],'optionC'
 if flag == "reclor":
     with open("/data/qbao775/Logical-and-abstract-reasoning/data/ReClor/test.json", "r", encoding="utf-8") as input_file:
         data = json.load(input_file)
-    for item in data:
+    for item in tqdm(data):
         context = item["context"]
         question = item["question"]
         optionA = item["answers"][0]
@@ -45,7 +45,7 @@ elif flag == "logiqa":
     with open("/data/qbao775/Logical-and-abstract-reasoning/data/LogiQA/Test.json", "r", encoding="utf-8") as input_file:
         data = json.load(input_file)
 
-    for item in data:
+    for item in tqdm(data):
         context = item["context"]
         question = item["question"]
         optionA = item["answers"][0]
@@ -82,7 +82,7 @@ elif flag == "logiqav2":
         for line in lines:
             data.append(json.loads(line))
 
-    for item in data:
+    for item in tqdm(data):
         context = item["text"]
         question = item["question"]
         optionA = item["options"][0]
