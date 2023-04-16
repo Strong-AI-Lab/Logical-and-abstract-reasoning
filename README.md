@@ -48,7 +48,7 @@ pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp
       <td align="center">AMR-LE</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
-      <td align="center"> <a href="">project</a>  </td>
+      <td align="center"> <a href="https://huggingface.co/qbao775/AMR-LE-DeBERTa-V2-XXLarge-Contraposition">project</a>  </td>
       <td align="center">#2 and #5 on the ReClor leaderboard</td>
   </tr>
   
