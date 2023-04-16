@@ -1,0 +1,6 @@
+ITEMS
+1. ReClor dataset is available for non-commercial research purpose only.
+2. All passages are obtained from websites/books which is not the property of National University of Singapore. We are not responsible for the content nor the meaning of these passages.
+3. We shuffle the order of answer options and randomly delete one of the wrong options for each dataset point to comply with fair use of law.
+4. You agree not to reproduce, duplicate, copy, sell, trade, resell or exploit for any commercial purpose, any portion of the contexts and any portion of derived data.
+5. We reserve the right to terminate your access to the ReClor dataset at any time.

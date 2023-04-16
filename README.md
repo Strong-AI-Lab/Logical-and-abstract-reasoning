@@ -2,8 +2,85 @@
 
 Repository for the evaluation of Large Language Models on logical and abstract reasoning tasks
 
-## Models
+## Installation
 
+```
+conda create -n logiarc python=3.8
+conda activate logiarc
+git clone https://github.com/Strong-AI-Lab/Logical-and-abstract-reasoning.git
+cd Logical-and-abstract-reasoning
+pip install -r requirements.txt
+```
+
+You also need to install apex, you can following the steps if you are using the Linux system.
+```
+git clone https://github.com/NVIDIA/apex
+cd apex
+pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+```
+## Models
+<table>
+  <tr>
+      <th colspan="2" align="center">Inference Type</th>
+      <th align="center">Model</th>
+      <th align="center">Size</th>
+      <th align="center">Task</th>
+      <th align="center">Link</th>
+      <th align="center">Remark</th>
+  </tr >
+  
+  <tr>
+      <th rowspan="7" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
+      <td align="center">MERIt</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://arxiv.org/abs/2203.00357">paper</a> <br /> <a href="https://github.com/SparkJiao/MERIt">project</a>  </td>
+      <td align="center">#3 on the ReClor leaderboard</td>
+  </tr>
+  <tr>
+      <td align="center">LReasoner</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://aclanthology.org/2022.findings-acl.127/">paper</a> <br /> <a href="https://github.com/WangsyGit/LReasoner">project</a>  </td>
+      <td align="center">#6 on the ReClor leaderboard</td>
+  </tr>
+  <tr>
+      <td align="center">AMR-LE</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://huggingface.co/qbao775/AMR-LE-DeBERTa-V2-XXLarge-Contraposition">project</a>  </td>
+      <td align="center">#2 and #5 on the ReClor leaderboard</td>
+  </tr>
+  
+  <tr>
+      <td align="center">LLaMA</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://arxiv.org/abs/2302.13971">paper</a> <br /> <a href="https://github.com/facebookresearch/llama">code</a>  </td>
+      <td align="center">Open source very large language model</td>
+  </tr>
+  <tr>
+      <td align="center">Alpaca</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://github.com/tatsu-lab/stanford_alpaca">code</a>  </td>
+      <td align="center">Fine-tuned LLaMA</td>
+  </tr>
+  <tr>
+      <td align="center">ChatGPT</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://arxiv.org/abs/2005.14165">paper</a> <br/><a href="https://openai.com/blog/chatgpt">project</a> </td>
+      <td align="center">Use api to do prompt tuning</td>
+  </tr>
+  <tr>
+      <td align="center">GPT-4</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://arxiv.org/abs/2303.08774">paper</a> <br/><a href="https://openai.com/product/gpt-4">project</a> </td>
+      <td align="center">Waiting for API</td>
+  </tr>
+</table>
 
 ## Datasets & Benchmarks
 
