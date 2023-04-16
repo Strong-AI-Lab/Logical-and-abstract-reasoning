@@ -1,5 +1,5 @@
-torch==1.13.0
-transformers==4.24.0
+git+https://github.com/huggingface/transformers  ## Make sure you install the transformers-4.28.0.dev0
+torch
 nltk
 spacy
 tqdm
@@ -9,3 +9,12 @@ datasets
 evaluate
 accelerate
 openai
+numpy
+rouge_score
+fire
+sentencepiece
+tokenizers==0.12.1
+wandb
+regex
+pandas
+bs4
