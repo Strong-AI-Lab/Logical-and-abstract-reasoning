@@ -118,7 +118,7 @@ pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp
   </tr>
   
   <tr>
-      <th rowspan="9" colspan="2" align="center" valign="middle">Abstract Reasoning</th>
+      <th rowspan="10" colspan="2" align="center" valign="middle">Abstract Reasoning</th>
       <td align="center">ARC</td>
       <td align="center">-</td>
       <td align="center">Abstract Reasoning</td>
@@ -139,20 +139,13 @@ pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp
       <td align="center"> <a href="http://arxiv.org/abs/2107.12580">paper</a> </td>
       <td align="center">Abstract Reasoning task</td>
   </tr>
-  <!--<tr>
-      <td align="center">PGM</td>
-      <td align="center">-</td>
-      <td align="center">Abstract Reasoning</td>
-      <td align="center"> <a href="https://icml.cc/Conferences/2018/Schedule?showEvent=2194">paper</a> <br /> <a href="https://github.com/deepmind/abstract-reasoning-matrices">code</a>  </td>
-      <td align="center">Text version of a Visual Abstract Reasoning task</td>
-  </tr>
   <tr>
       <td align="center">RAVEN</td>
       <td align="center">-</td>
       <td align="center">Abstract Reasoning</td>
       <td align="center"> <a href="https://openaccess.thecvf.com/content_CVPR_2019/html/Zhang_RAVEN_A_Dataset_for_Relational_and_Analogical_Visual_REasoNing_CVPR_2019_paper.html">paper</a> <br /> <a href="http://wellyzhang.github.io/project/raven.html">project</a>  </td>
       <td align="center">Text version of a Visual Abstract Reasoning task</td>
-  </tr>-->
+  </tr>
   <tr>
       <td align="center">Diagrammatic Logic</td>
       <td align="center">-</td>
