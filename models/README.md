@@ -23,7 +23,15 @@ python transformers/src/transformers/models/llama/convert_llama_weights_to_hf.py
     --output_dir llama_7B_hf
 ```
 
-If you want to fine-tune LLaMA, please follow the following script. Here is an example to replicate Alpaca using LLaMA. We refer the code from [here](https://github.com/tatsu-lab/stanford_alpaca).
+If you want to fine-tune LLaMA, please follow the following script. Here is an example to replicate Alpaca using LLaMA. We refer the code from [here](https://github.com/tatsu-lab/stanford_alpaca). You need to git clone the [stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca.git) firstly as the following. The dataset `alpaca_data.json` is also been provided under the [stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca.git) project.
+
+```
+git clone https://github.com/tatsu-lab/stanford_alpaca.git
+cd stanford_alpaca
+```
+
+And then conduct the follwoing fine-tuning. Cause our requirements have included the packages that been used in stanford_alpaca, so you do not need to run the `pip install -r requirements.txt` again.
+
 ```
 ## Fine-tuning the LLaMA-7B and replicate the Alpaca model
 CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port=2024 train.py \
