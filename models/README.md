@@ -60,7 +60,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port=2024 trai
 If you met some problems when you fine-tune LLaMA, you can have a look at this [link](https://github.com/tatsu-lab/stanford_alpaca/issues/159#issuecomment-1490247999) which I summarized some of my experience.
 
 ## Other encoder-based large language models from ReClor leaderboard training and evaluating scripts
-You can run the following command to conduct the fine-tuning experiment on encoder-based large language models (MERIt, AMR-LE and LReasoner) to do the training. The code includes datasets for `ReClor`, `LogiQA` and `LogiQA-V2`. Here is an example do conduct fine-tuning using `ReClor` dataset. 
+You can run the following command to conduct the fine-tuning experiment on encoder-based large language models ([MERIt](https://github.com/SparkJiao/MERIt), [AMR-LE](https://huggingface.co/qbao775/AMR-LE-DeBERTa-V2-XXLarge-Contraposition) and [LReasoner](https://github.com/WangsyGit/LReasoner)) to do the training. The code includes datasets for `ReClor`, `LogiQA` and `LogiQA-V2`. Here is an example do conduct fine-tuning using `ReClor` dataset. 
 ```
 sh ./scripts/run_LLM_reclor.sh
 ```
