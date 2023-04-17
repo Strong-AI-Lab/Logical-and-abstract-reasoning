@@ -13,7 +13,7 @@ You can run the following command to conduct the experiment on Alpaca to do the 
 python run_alpaca_prompt.py
 ```
 
-Currently `alpaca-7B` are trained and located at `/data/qbao775/Explanation-Generation/qiming_alpaca_7B` under `hgx2.sail.cloud.nesi.nz` server. If you want to use Alpaca do conduct experiment, you may need to use `hgx2.sail.cloud.nesi.nz` server to do the experiment. `LLaMA` is located in `/data/LLaMA` under both `hgx1.sail.cloud.nesi.nz` and `hgx2.sail.cloud.nesi.nz` server. But if you want to load the `LLaMa` to do fine-tuning and testing, you need to convert the model into the format into huggingface version as the following shown.
+Currently `alpaca-7B` are trained and located at `/data/qbao775/Explanation-Generation/qiming_alpaca_7B` under `hgx2.sail.cloud.nesi.nz` server. If you want to use Alpaca do conduct experiment, you may need to use `hgx2.sail.cloud.nesi.nz` server to do the experiment. `LLaMA` is located in `/data/LLaMA` under both `hgx1.sail.cloud.nesi.nz` and `hgx2.sail.cloud.nesi.nz` server. But if you want to load the `LLaMA` to do fine-tuning and testing, you need to convert the model into the format into huggingface version as the following shown.
 
 ```
 ## Convert the LLaMA-7B to LLaMA-7B huggingface model
