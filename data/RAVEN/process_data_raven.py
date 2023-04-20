@@ -98,6 +98,7 @@ def get_in_tree(root, label, level=0):
 def format_sample(problem_panels, answer_panels):
     sample = {
         "input": [],
+        "choice_strings": list(string.ascii_uppercase[:ANSWER_SET]),
         "ideal": ""
     }
     sample["input"].append({
