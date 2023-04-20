@@ -6,6 +6,7 @@ DATASETS = {
     "RAVEN" : EvalsDataset,
     "ACRE" : EvalsDataset,
     "ARC" : EvalsDataset,
+    "MNLI" : HFDataset,
 }
 
 

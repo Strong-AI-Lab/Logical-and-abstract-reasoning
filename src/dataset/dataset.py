@@ -1,4 +1,6 @@
 
+import json
+
 import datasets
 
 
@@ -30,9 +32,23 @@ class EvalsDataset(IterableDataset):
    
 class HFDataset(IterableDataset):
     
-    def __init__(self, dataset_path : str, **kwargs):
-        self.dataset = datasets.load_dataset(dataset_path, **kwargs)
+    def __init__(self, dataset_name : str, task : str, dataset_type : str, dataset_details : str = None, context : list = ["sentence"], **kwargs):
+        self.context = context
+        if dataset_details is None:
+            self.dataset = datasets.load_dataset(dataset_type, **kwargs)
+        else:
+            self.dataset = datasets.load_dataset(dataset_type, dataset_details, **kwargs)
+            
         self.dataset_iter = iter(self.dataset)
     
     def __next__(self):
-        return next(self.dataset_iter)
+        return self.format_to_evals(next(self.dataset_iter))
+    
+    def format_to_evals(self, data : dict):
+        input = [{
+            "role": "system",
+            "content": data[c]
+        } for c in self.context]
+
+        eval_dict = {"input" : input, "ideal" : data["label"]}
+        return json.dumps(eval_dict)

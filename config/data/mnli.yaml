@@ -1,0 +1,7 @@
+
+dataset_name: "MNLI"
+dataset_type: "glue"
+dataset_details: "mnli"
+split: "test_matched"
+context: ["premise", "hypothesis"]
+task: "mc_qa"
