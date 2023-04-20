@@ -5,6 +5,7 @@ from .gpt import GPTModel, GPTModelCompletion, GPTModelChat
 
 
 MODELS = {
+    "gpt-2": HFModel,
     "gpt-3.5-turbo": GPTModelChat,
     "text-davinci-003": GPTModelCompletion,
     "alpaca": HFModel,

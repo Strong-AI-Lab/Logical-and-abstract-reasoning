@@ -2,6 +2,9 @@
 from .base import Model
 
 from transformers import (
+    GPT2Config,
+    GPT2LMHeadModel,
+    GPT2Tokenizer,
     LlamaConfig,
     AutoTokenizer, 
     AutoModelForCausalLM,
@@ -20,7 +23,9 @@ from transformers import (
 )
 
 MODEL_CLASSES = {
+    "gpt-2": (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
     "alpaca": (LlamaConfig, AutoModelForCausalLM, AutoTokenizer),
+    "bert": (BertConfig, AutoModelForCausalLM, BertTokenizer),
     "bert-qa": (BertConfig, BertForMultipleChoice, BertTokenizer),
     "xlnet": (XLNetConfig, XLNetForMultipleChoice, XLNetTokenizer),
     "roberta": (RobertaConfig, RobertaForMultipleChoice, RobertaTokenizer),
@@ -64,9 +69,9 @@ class HFModel(Model):
     def answer_query(self, prompt):
         outputs = self.model(**prompt)
         
-        outputs = outputs.logits[0]
+        outputs = outputs.logits[0].argmax(dim=-1)
         answer = [self.tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
-        return " ".join(answer)
+        return "".join(answer)
     
 
 class HFQAModel(HFModel):

@@ -2,11 +2,16 @@
 import argparse
 import json
 import yaml
+from tqdm import tqdm
+
+import wandb
 
 from src.models.loader import loadModel
 from src.dataset.loader import loadDataset
+from src.logging.logger import LoggerManager 
 
 
+# Argument Parsing
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Run evaluation on given model for given dataset."
@@ -35,11 +40,11 @@ def parse_args():
     return args, k_dict # return parser predefined arguments and additional keyword arguments specified by the user
         
 
-def log_results(answer, target):
-    print("Answer: ", answer, target)
+# Logging
+logger = LoggerManager([])
 
 
-
+# Main
 def main():
     args, kwargs = parse_args()
     
@@ -58,13 +63,15 @@ def main():
     data = loadDataset(**{**data_config, **kwargs})
 
     # Perform evaluation
-    for line in data:
+    for line in tqdm(data):
         j_line = json.loads(line)
         input, label = model.format_data(j_line)
         response = model.answer_query(input)
         
-        log_results(response, label)
-        exit()
+        logger.log_results(response, label)
+
+    # Log results
+    print(f"Accuracy: {logger.results.count(True) / len(logger.results)}")
 
 
 if __name__ == "__main__":
