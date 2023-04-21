@@ -30,7 +30,7 @@ pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp
   </tr >
   
   <tr>
-      <th rowspan="7" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
+      <th rowspan="8" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
       <td align="center">MERIt</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
@@ -64,6 +64,13 @@ pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
       <td align="center"> <a href="https://github.com/tatsu-lab/stanford_alpaca">code</a>  </td>
+      <td align="center">Fine-tuned LLaMA</td>
+  </tr>
+  <tr>
+      <td align="center">Vicuna</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://vicuna.lmsys.org/">project</a> </br> <a href="https://github.com/lm-sys/FastChat">code</a></td>
       <td align="center">Fine-tuned LLaMA</td>
   </tr>
   <tr>
