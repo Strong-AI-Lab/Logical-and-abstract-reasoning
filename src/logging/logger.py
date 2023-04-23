@@ -7,7 +7,11 @@ class LoggerManager():
         self.results = []
 
     def log_results(self, answer, target):
-        self.results.append(answer == target)
+        result = answer == target
+
+        self.results.append(result)
 
         for logger in self.loggers:
-            logger.log_results(answer, target)
+            logger.log({
+                "accuracy": result,
+            })

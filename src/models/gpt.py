@@ -27,6 +27,7 @@ class GPTModel(Model):
         
     
     def _prompt_completion(self, prompt):
+        prompt = self.convert_input_list_to_text(prompt)
         response = openai.Completion.create(
             engine=self.model_name,
             prompt=prompt,
@@ -34,17 +35,31 @@ class GPTModel(Model):
             n=1,
             stop=None,
             temperature=self.temperature)
-        return response.choices[0].text
+        return [choice.text for choice in response.choices]
     
     def _prompt_chat(self, prompt):
-        response = openai.ChatCompletion.create(
-            model=self.model_name,
-            messages=prompt,
-            max_tokens=self.max_tokens,
-            n=1,
-            stop=None,
-            temperature=self.temperature)
-        return response.choices[0].message.content
+        responses = []
+        for i in range(len(prompt[0]["content"])):
+            prompt_i = self._get_prompt_i(prompt, i)
+            response = openai.ChatCompletion.create(
+                model=self.model_name,
+                messages=prompt_i,
+                max_tokens=self.max_tokens,
+                n=1,
+                stop=None,
+                temperature=self.temperature)
+            responses.append(response.choices[0].message.content)
+        return responses
+    
+    def _get_prompt_i(self, prompt, i):
+        prompt_i = []
+        for p in prompt:
+            p_i = {}
+            for k, v in p.items():
+                p_i[k] = v[i]
+            prompt_i.append(p_i)
+        return prompt_i
+        
     
 
 class GPTModelCompletion(GPTModel):

@@ -1,4 +1,6 @@
 
+import json
+
 from .dataset import IterableDataset, EvalsDataset, HFDataset
 
 DATASETS = {

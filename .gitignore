@@ -1,3 +1,5 @@
 raw/
 *.zip
 __pycache__/
+env/
+wandb/

@@ -58,10 +58,11 @@ class HFModel(Model):
         self.model_config = self.model_config_class()
         self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
+        self.tokenizer.pad_token = self.tokenizer.eos_token
 
     def format_data(self, data: dict) -> tuple:
         prompt = self.convert_input_list_to_text(data["input"])
-        tokenized_prompt = self.tokenizer(prompt, return_tensors="pt")
+        tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", padding=True)
         ideal = data["ideal"]
 
         return tokenized_prompt, ideal
@@ -69,9 +70,9 @@ class HFModel(Model):
     def answer_query(self, prompt):
         outputs = self.model(**prompt)
         
-        outputs = outputs.logits[0].argmax(dim=-1)
-        answer = [self.tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
-        return "".join(answer)
+        outputs = outputs.logits.argmax(dim=-1)
+        answers = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        return ["".join(answer) for answer in answers]
     
 
 class HFQAModel(HFModel):
@@ -80,29 +81,44 @@ class HFQAModel(HFModel):
         choice_idxs = []
         for choice in choice_values:
             for i, inp in enumerate(input):
-                if inp["content"].startswith(choice + '.'):
+                if inp["content"][0].startswith(choice[0] + '.'):
                     choice_idxs.append(i)
                     
         context = self.convert_input_list_to_text([c for i, c in enumerate(input) if i not in choice_idxs])
         choices_texts = [self.convert_input_list_to_text([input[idx]]) for idx in choice_idxs]
 
         return context, choices_texts
+    
+    def _transpose_list(self, l : list) -> list:
+        return list(map(list, zip(*l)))
+    
+    def _flatten_list(self, l : list) -> list:
+        return [item for sublist in l for item in sublist]
 
     def format_data(self, data: dict) -> tuple:
         input = data["input"]
         choices = data["choice_strings"]
         label = data["ideal"]
+
+        batch_size = len(label)
         
         context, choices_texts = self._extract_choices_text(input, choices)
-        tokenized_data = self.tokenizer([context] * len(choices_texts), choices_texts, return_tensors="pt", padding=True)
-        tokenized_data = {k: v.unsqueeze(0) for k, v in tokenized_data.items()}
+        context = self._flatten_list([[c] * len(choices_texts) for c in context])
+        choices_texts = self._flatten_list(self._transpose_list(choices_texts))
 
-        label_idx = choices.index(label)
+        tokenized_data = self.tokenizer(context, choices_texts, return_tensors="pt", padding=True)
+        tokenized_data = {k: v.reshape(batch_size, -1, v.size(-1)) for k, v in tokenized_data.items()}
 
-        return tokenized_data, label_idx
+        label_idxs = []
+        for i in range(len(label)):
+            choices_i = [c[i] for c in choices]
+            label_idx = choices_i.index(label[i])
+            label_idxs.append(label_idx)
+        
+        return tokenized_data, label_idxs
 
     def answer_query(self, prompt):
         outputs = self.model(**prompt)
-
-        answer = outputs.logits[0].argmax().item()
-        return answer
+        
+        answers = outputs.logits.argmax(-1).tolist()
+        return answers
