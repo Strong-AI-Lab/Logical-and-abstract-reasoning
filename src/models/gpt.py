@@ -17,6 +17,9 @@ class GPTModel(Model):
     def load(self):
         pass # no load required as calls are made to API
 
+    def format_data(self, data: dict) -> tuple:
+        return data["input"], data["ideal"]
+
     def answer_query(self, prompt):
         if self.model_type == "completion":
             return self._prompt_completion(prompt)

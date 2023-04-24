@@ -12,7 +12,7 @@ class Model():
         raise NotImplementedError("Abstract model class does not implement answer_query.")
     
     def format_data(self, data : dict) -> tuple:
-        return self.convert_input_list_to_text(data["input"]), data["ideal"]
+        raise NotImplementedError("Abstract model class does not implement format_data.")
     
     def convert_input_list_to_text(self, input_list : list, separator = "\n", skip_instructions : bool = False) -> str:
         if skip_instructions:

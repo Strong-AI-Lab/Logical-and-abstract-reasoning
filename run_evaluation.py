@@ -2,6 +2,7 @@
 import argparse
 import yaml
 from tqdm import tqdm
+import datetime
 
 from torch.utils.data import DataLoader
 
@@ -56,7 +57,7 @@ def main():
     # wandb_logger = WandbLogger(model_config=model_config, data_config=data_config, **kwargs)
     # csv_logger = CSVLogger(f"logs/results_{wandb_logger.run.id}.csv")
     # loggers = LoggerManager([wandb_logger, csv_logger])
-    csv_logger = CSVLogger("logs/results_0.csv")
+    csv_logger = CSVLogger(f"logs/results_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv")
     loggers = LoggerManager([csv_logger])
 
     # Load model

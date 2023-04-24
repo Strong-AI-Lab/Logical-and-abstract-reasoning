@@ -18,8 +18,11 @@ class LoggerManager():
         self.loggers = loggers
 
     def log_results(self, raw_input, answer, target):
+        inputs = raw_input["input"]
         for logger in self.loggers:
-            logger.log_results(raw_input, answer, target)
+            for i in range(len(target)):
+                input_i = [{k : v[i] for k, v in input.items()} for input in inputs]
+                logger.log_results(input_i, answer[i], target[i])
         
     def end_logging(self):
         for logger in self.loggers:

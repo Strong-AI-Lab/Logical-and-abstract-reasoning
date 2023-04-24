@@ -1,3 +1,4 @@
 
 model_name: "text-davinci-003"
 task: "open_qa"
+max_tokens: 512
