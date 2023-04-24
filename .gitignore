@@ -3,3 +3,4 @@ raw/
 __pycache__/
 env/
 wandb/
+logs/

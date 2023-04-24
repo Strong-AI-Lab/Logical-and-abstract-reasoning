@@ -4,20 +4,30 @@ Repository for the evaluation of Large Language Models on logical and abstract r
 
 ## Installation
 
+To install the repository, use the following command:
+
 ```
-conda create -n logiarc python=3.8
-conda activate logiarc
 git clone https://github.com/Strong-AI-Lab/Logical-and-abstract-reasoning.git
+```
+
+To install the dependencies in a virtual environment, use the following:
+```
 cd Logical-and-abstract-reasoning
+python -m venv env/
+source env/bin/activate
 pip install -r requirements.txt
 ```
 
-You also need to install apex, you can following the steps if you are using the Linux system.
+## Use
+
+To use the repository, use the following command:
 ```
-git clone https://github.com/NVIDIA/apex
-cd apex
-pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+python run_evaluation config/model/<model_config.yaml> config/data/<data_config.yaml> --<kwarg_name> <kwarg>
 ```
+
+You can choose the model to evaluate by changing the `<model_config.yaml>` file, and the dataset to evaluate the model on by changing the `<data_config.yaml>` file. You can add any additional arguments as `<kwargs>` (e.g. private API key for GPT models). 
+
+
 ## Models
 <table>
   <tr>

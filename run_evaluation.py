@@ -3,12 +3,11 @@ import argparse
 import yaml
 from tqdm import tqdm
 
-import wandb
 from torch.utils.data import DataLoader
 
 from src.models.loader import loadModel
 from src.dataset.loader import loadDataset
-from src.logging.logger import LoggerManager 
+from src.logging.logger import LoggerManager, WandbLogger, CSVLogger
 
 
 # Argument Parsing
@@ -54,16 +53,11 @@ def main():
         data_config = yaml.safe_load(data_config_file)
 
     # Initialize logger
-    # wandb.login()
-    # run = wandb.init(
-    #     project="Logical-and-Abstract-Reasoning",
-    #     config={
-    #         "model": model_config,
-    #         "dataset": data_config,
-    #         "kwargs": kwargs,
-    #     })
-    # logger = LoggerManager([run])
-    logger = LoggerManager([])
+    # wandb_logger = WandbLogger(model_config=model_config, data_config=data_config, **kwargs)
+    # csv_logger = CSVLogger(f"logs/results_{wandb_logger.run.id}.csv")
+    # loggers = LoggerManager([wandb_logger, csv_logger])
+    csv_logger = CSVLogger("logs/results_0.csv")
+    loggers = LoggerManager([csv_logger])
 
     # Load model
     model = loadModel(**{**model_config, **kwargs})
@@ -80,10 +74,10 @@ def main():
         input, label = model.format_data(line)
         response = model.answer_query(input)
         
-        logger.log_results(response, label)
+        loggers.log_results(line, response, label)
 
     # Log results
-    print(f"Accuracy: {logger.results.count(True) / len(logger.results)}")
+    loggers.end_logging()
 
 
 if __name__ == "__main__":
