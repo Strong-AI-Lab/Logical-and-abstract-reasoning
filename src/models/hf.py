@@ -6,9 +6,10 @@ from transformers import (
     GPT2LMHeadModel,
     GPT2Tokenizer,
     LlamaConfig,
-    AutoTokenizer, 
-    AutoModelForCausalLM,
+    LlamaTokenizer, 
+    LlamaForCausalLM,
     BertConfig,
+    AutoModelForCausalLM,
     BertForMultipleChoice,
     BertTokenizer,
     RobertaConfig,
@@ -24,7 +25,7 @@ from transformers import (
 
 MODEL_CLASSES = {
     "gpt-2": (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
-    "alpaca": (LlamaConfig, AutoModelForCausalLM, AutoTokenizer),
+    "alpaca": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "bert": (BertConfig, AutoModelForCausalLM, BertTokenizer),
     "bert-qa": (BertConfig, BertForMultipleChoice, BertTokenizer),
     "xlnet": (XLNetConfig, XLNetForMultipleChoice, XLNetTokenizer),
@@ -35,9 +36,11 @@ MODEL_CLASSES = {
 
 class HFModel(Model):
 
-    def __init__(self, model_name, model_weights, **kwargs):
+    def __init__(self, model_name, model_weights, model_args : dict = {}, model_config_args : dict = {}, **kwargs):
         self.model_name = model_name
         self.model_weights = model_weights
+        self.model_args = model_args
+        self.model_config_args = model_config_args
 
         try:
             self.model_config_class, self.model_class, self.tokenizer_class = MODEL_CLASSES[model_name]
@@ -55,10 +58,10 @@ class HFModel(Model):
         self.tokenizer = None
 
     def load(self):
-        self.model_config = self.model_config_class()
-        self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config)
+        self.model_config = self.model_config_class(**self.model_config_args)
+        self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
-        self.tokenizer.pad_token = self.tokenizer.eos_token
+        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
     def format_data(self, data: dict) -> tuple:
         prompt = self.convert_input_list_to_text(data["input"])

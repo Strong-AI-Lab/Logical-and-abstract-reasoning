@@ -1,4 +1,6 @@
 
 model_name: "alpaca"
-model_weights: "chavinlo/alpaca-native"
+model_weights: "chainyo/alpaca-lora-7b"
 task: "open_qa"
+model_config_args:
+  fsdp_transformer_layer_cls_to_wrap: "LLaMADecoderLayer"
