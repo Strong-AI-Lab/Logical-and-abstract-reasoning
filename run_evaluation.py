@@ -54,10 +54,8 @@ def main():
         data_config = yaml.safe_load(data_config_file)
 
     # Initialize logger
-    # wandb_logger = WandbLogger(model_config=model_config, data_config=data_config, **kwargs)
-    # csv_logger = CSVLogger(f"logs/results_{wandb_logger.run.id}.csv")
-    # loggers = LoggerManager([wandb_logger, csv_logger])
-    csv_logger = CSVLogger(f"logs/results_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv")
+    logger_name = f"results_{model_config['model_name']}_{data_config['dataset_name']}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    csv_logger = CSVLogger(f"logs/{logger_name}.csv")
     loggers = LoggerManager([csv_logger])
 
     # Load model
