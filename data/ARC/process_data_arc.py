@@ -45,7 +45,7 @@ def process_file(file_path):
     for test_case in input_data["test"]:
         new_sample = sample_input.copy()
         new_sample.append({
-            "role": "system",
+            "role": "user",
             "content": f"{str(test_case['input'])} -> "
         })
         samples.append({
