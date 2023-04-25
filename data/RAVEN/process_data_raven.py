@@ -110,13 +110,13 @@ def format_sample(problem_panels, answer_panels):
     
     for i, panel in enumerate(problem_panels):
         sample["input"].append({
-            "role": "system",
+            "role": "user",
             "content": f"{i+1}. {panel}"
         })
     
     for i, panel in enumerate(answer_panels):
         sample["input"].append({
-            "role": "system",
+            "role": "user",
             "content": f"{string.ascii_uppercase[i]}. {panel}"
         })
     
