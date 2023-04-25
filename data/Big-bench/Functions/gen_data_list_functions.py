@@ -49,7 +49,7 @@ for i in tqdm.tqdm(tasks_ids):
         })
 
     sample_input.append({
-        "role": "system",
+        "role": "user",
         "content": f"{str(data['examples'][nb_examples]['input'])} -> "
     })
     samples.append({

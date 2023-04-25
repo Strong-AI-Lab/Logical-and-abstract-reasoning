@@ -6,6 +6,7 @@ from .dataset import IterableDataset, EvalsDataset, HFDataset
 DATASETS = {
     "PVR" : EvalsDataset,
     "RAVEN" : EvalsDataset,
+    "BENCH" : EvalsDataset,
     "ACRE" : EvalsDataset,
     "ARC" : EvalsDataset,
     "MNLI" : HFDataset,
