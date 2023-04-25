@@ -1,0 +1,4 @@
+
+dataset_name: "PATTERNS"
+dataset_path: "data/Evals/Patterns/samples.jsonl"
+task: "open_qa"

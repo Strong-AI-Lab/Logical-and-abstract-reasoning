@@ -9,6 +9,11 @@ DATASETS = {
     "BENCH" : EvalsDataset,
     "ACRE" : EvalsDataset,
     "ARC" : EvalsDataset,
+    "DIAGRAMMATIC" : EvalsDataset,
+    "LOGIC" : EvalsDataset,
+    "PATTERNS" : EvalsDataset,
+    "STATEMENTS" : EvalsDataset,
+    "STRINGS" : EvalsDataset,
     "MNLI" : HFDataset,
 }
 

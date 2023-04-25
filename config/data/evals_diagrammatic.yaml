@@ -1,0 +1,4 @@
+
+dataset_name: "DIAGRAMMATIC"
+dataset_path: "data/Evals/Diagrammatic/samples.jsonl"
+task: "open_qa"
