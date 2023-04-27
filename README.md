@@ -27,6 +27,11 @@ python run_evaluation config/model/<model_config.yaml> config/data/<data_config.
 
 You can choose the model to evaluate by changing the `<model_config.yaml>` file, and the dataset to evaluate the model on by changing the `<data_config.yaml>` file. You can add any additional arguments as `<kwargs>` (e.g. private API key for GPT models). 
 
+By default, all the results are saved in a csv file in the `logs/` folder. You can re-compute the metrics from the evaluation run from this file by running the following:
+```
+python src/evaluate/evaluator.py logs/<results_file.csv>
+```
+
 
 ## Models
 <table>
