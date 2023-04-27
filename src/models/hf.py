@@ -41,6 +41,7 @@ class HFModel(Model):
         self.model_weights = model_weights
         self.model_args = model_args
         self.model_config_args = model_config_args
+        self.gpu = gpu
 
         try:
             self.model_config_class, self.model_class, self.tokenizer_class = MODEL_CLASSES[model_name]
@@ -63,17 +64,26 @@ class HFModel(Model):
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
         self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
+        if self.gpu is not None:
+            self.model = self.model.to(self.gpu)
+
     def format_data(self, data: dict) -> tuple:
         prompt = self.convert_input_list_to_text(data["input"])
         tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", padding=True)
         ideal = data["ideal"]
 
+        if self.gpu is not None:
+            tokenized_prompt = {k: v.to(self.gpu) for k, v in tokenized_prompt.items()}
+
         return tokenized_prompt, ideal
 
     def answer_query(self, prompt):
         outputs = self.model(**prompt)
-        
         outputs = outputs.logits.argmax(dim=-1)
+
+        if self.gpu is not None:
+            outputs = outputs.cpu()
+
         answers = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
         return ["".join(answer) for answer in answers]
     
