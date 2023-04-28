@@ -40,7 +40,7 @@ for i in tqdm.tqdm(tasks_ids):
     sample_input = []
     sample_input.append({
         "role": "system",
-        "content": f"{data['task_prefix']}"
+        "content": "Apply a function to the final input list to generate the output list. Use any preceding inputs and outputs as examples to find what is the function used. All example outputs have been generated using the same function."
     })
     for i in range(nb_examples):
         sample_input.append({
