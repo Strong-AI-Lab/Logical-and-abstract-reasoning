@@ -112,7 +112,7 @@ def get_trial_text(objects, label):
         c = obj_desc["color"]
         s = obj_desc["shape"]
         t = obj_desc["material"]
-        object_text += f"A {c} {s} object in {t} is visible. "
+        object_text += f"A {c} {s} object in {t} is visible. The light is "
     
     return [
                 {
