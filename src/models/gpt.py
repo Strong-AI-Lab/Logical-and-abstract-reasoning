@@ -38,7 +38,7 @@ class GPTModel(Model):
             n=1,
             stop=None,
             temperature=self.temperature)
-        return [choice.text for choice in response.choices]
+        return [self._postprocess(choice.text) for choice in response.choices]
     
     def _prompt_chat(self, prompt):
         responses = []
@@ -51,7 +51,7 @@ class GPTModel(Model):
                 n=1,
                 stop=None,
                 temperature=self.temperature)
-            responses.append(response.choices[0].message.content)
+            responses.append(self._postprocess(response.choices[0].message.content))
         return responses
     
     def _get_prompt_i(self, prompt, i):
@@ -62,6 +62,12 @@ class GPTModel(Model):
                 p_i[k] = v[i]
             prompt_i.append(p_i)
         return prompt_i
+
+    def _postprocess(self, text):
+        if len(text) == 0:
+            return "<|endoftext|>"
+        else:
+            return text
         
     
 
