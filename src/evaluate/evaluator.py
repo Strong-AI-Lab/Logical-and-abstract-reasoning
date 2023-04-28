@@ -7,20 +7,21 @@ import nltk
 
 class Evaluator():
 
-    def evaluate_flex(self, answer, target):
+    def _evaluate_flex(self, answer, target):
         target = re.sub(r"\W+", "", target)
         # assert len(target) > 0, f"Target is empty."
 
         answer = re.findall(r'\b\w+\b', answer)
         if len(answer) > 1:
-            print(f"Warning: answer has more than one word: {answer}. Use of pos-tagging for disambiguation.")
-            answer = [ans for ans, tag in nltk.pos_tag(answer) if tag in ["CD", "NN", "NNS", "NNP", "NNPS"]]
+            print(f"Warning: answer has more than one word: {answer}. Disambiguation attempt.")
+            if self.pos_tagging:
+                answer = [ans for ans, tag in nltk.pos_tag(answer) if tag in ["CD", "NN", "NNS", "NNP", "NNPS"]]
             choices = [(i, choice) for i, choice in enumerate(answer) if choice in self.possible_answers]
 
             if len(choices) == 1:
                 answer = choices[0][1]
             elif len(choices) > 1:
-                print(f"Warning: answer has more than one possible answer: {choices}")
+                print(f"Warning: more than one possible answer: {choices}")
                 answer = None
             else:
                 answer = None
@@ -34,12 +35,13 @@ class Evaluator():
         return answer == target
 
 
-    def __init__(self, results_file):
+    def __init__(self, results_file, pos_tagging=False):
         nltk.download('averaged_perceptron_tagger')
 
         self.results_file = results_file
         self.results_table = pd.read_csv(results_file)
-        self.evaluation_operator = self.evaluate_flex
+        self.evaluation_operator = self._evaluate_flex
+        self.pos_tagging = pos_tagging
 
         self.possible_answers = self.results_table["target"].unique()
 
@@ -62,10 +64,12 @@ class Evaluator():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("results_file", type=str, help="Path to the results file")
+    parser.add_argument("--pos_tagging", action="store_true", help="Whether to use pos tagging or not")
     args = parser.parse_args()
     results_file = args.results_file
+    pos_tagging = args.pos_tagging
 
-    evaluator = Evaluator(results_file)
+    evaluator = Evaluator(results_file, pos_tagging=pos_tagging)
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()
