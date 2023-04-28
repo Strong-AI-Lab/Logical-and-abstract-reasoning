@@ -92,7 +92,7 @@ def main():
     loggers.end_logging()
 
     # Extract metrics
-    evaluator = Evaluator(csv_logger.save_path)
+    evaluator = Evaluator(csv_logger.save_path, pos_tagging=(True if ("pos_tagging" in kwargs or "pos_tagging" in data_config) else False))
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()

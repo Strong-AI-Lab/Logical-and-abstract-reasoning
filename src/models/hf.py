@@ -36,12 +36,13 @@ MODEL_CLASSES = {
 
 class HFModel(Model):
 
-    def __init__(self, model_name, model_weights, model_args : dict = {}, model_config_args : dict = {}, **kwargs):
+    def __init__(self, model_name, model_weights, model_args : dict = {}, model_config_args : dict = {}, gpu : str = None, max_new_tokens=30, **kwargs):
         self.model_name = model_name
         self.model_weights = model_weights
         self.model_args = model_args
         self.model_config_args = model_config_args
         self.gpu = gpu
+        self.max_new_tokens = max_new_tokens
 
         try:
             self.model_config_class, self.model_class, self.tokenizer_class = MODEL_CLASSES[model_name]
@@ -62,7 +63,8 @@ class HFModel(Model):
         self.model_config = self.model_config_class(**self.model_config_args)
         self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
-        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.tokenizer.padding_side = 'left'
 
         if self.gpu is not None:
             self.model = self.model.to(self.gpu)
@@ -78,8 +80,8 @@ class HFModel(Model):
         return tokenized_prompt, ideal
 
     def answer_query(self, prompt):
-        outputs = self.model(**prompt)
-        outputs = outputs.logits.argmax(dim=-1)
+        outputs = self.model.generate(**prompt, max_new_tokens=self.max_new_tokens)
+        outputs = outputs[:,-self.max_new_tokens+1:]
 
         if self.gpu is not None:
             outputs = outputs.cpu()

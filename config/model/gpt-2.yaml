@@ -2,3 +2,4 @@
 model_name: "gpt-2"
 model_weights: "gpt2"
 task: "open_qa"
+max_new_tokens: 4
