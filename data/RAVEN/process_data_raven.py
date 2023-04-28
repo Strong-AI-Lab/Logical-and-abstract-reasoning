@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(description='Convert RAVEN data split to text a
 parser.add_argument('input_path')
 parser.add_argument('output_path')
 parser.add_argument('--input_path_aux', action='store', help='If input is a xml file, auxiliary npz input file.')
-parser.add_argument('--type', action='store', default='text', help='Type of output: text, symbolic or pixel.')
+parser.add_argument('--type', action='store', default='text', help='Type of output: text, symbolic, count, or pixel.')
 
 args = parser.parse_args()
 input_file_path = args.input_path
@@ -119,6 +119,11 @@ def format_sample(problem_panels, answer_panels):
             "role": "user",
             "content": f"{string.ascii_uppercase[i]}. {panel}"
         })
+
+    sample["input"].append({
+        "role": "user",
+        "content": "The answer is "
+    })
     
     return sample
 
