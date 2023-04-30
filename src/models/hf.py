@@ -124,6 +124,9 @@ class HFQAModel(HFModel):
         tokenized_data = self.tokenizer(context, choices_texts, return_tensors="pt", padding=True)
         tokenized_data = {k: v.reshape(batch_size, -1, v.size(-1)) for k, v in tokenized_data.items()}
 
+        if self.gpu is not None:
+            tokenized_data = {k: v.to(self.gpu) for k, v in tokenized_data.items()}
+
         label_idxs = []
         for i in range(len(label)):
             choices_i = [c[i] for c in choices]
