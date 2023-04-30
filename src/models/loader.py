@@ -2,6 +2,7 @@
 from .base import Model
 from .hf import HFModel, HFQAModel
 from .gpt import GPTModel, GPTModelCompletion, GPTModelChat
+from .algorithmic import AlgorithmicWrapper
 
 
 MODELS = {
@@ -18,10 +19,14 @@ MODELS = {
 }
 
 
-def loadModel(model_name : str, **kwargs) -> Model:
+def loadModel(model_name : str, task : str, **kwargs) -> Model:
     if model_name in MODELS:
         model = MODELS[model_name](**{**{"model_name" : model_name}, **kwargs})
         model.load()
+
+        if task == "algo":
+            model = AlgorithmicWrapper(model)
         return model
+    
     else:
         raise ValueError(f"Model {model_name} not found.")
