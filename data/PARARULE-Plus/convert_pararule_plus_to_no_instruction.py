@@ -18,12 +18,8 @@ with open("/data/qbao775/Logical-and-abstract-reasoning/data/PARARULE-Plus/Depth
                 "ideal": None}
             temp["input"][0]["content"] = "Passage: " + item["context"]
             temp["input"][1]["content"] = "Question: " + ques["text"]
-            label = None
-            if ques["label"] == "true":
-                label = 1
-            elif ques["label"] == "false":
-                label = 0
-            temp["ideal"] = label
+            # label = None
+            temp["ideal"] = ques["label"]
             json.dump(temp, output_file, ensure_ascii=False)
             output_file.write("\n")
 
