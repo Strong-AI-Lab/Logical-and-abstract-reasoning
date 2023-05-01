@@ -2,6 +2,6 @@
 model_name: "alpaca"
 model_weights: "chainyo/alpaca-lora-7b"
 task: "open_qa"
-max_new_tokens: 4
+max_new_tokens: 12
 model_config_args:
   fsdp_transformer_layer_cls_to_wrap: "LLaMADecoderLayer"
