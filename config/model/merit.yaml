@@ -1,4 +1,4 @@
 
 model_name: "debertav2"
-model_weights: "chitanda/merit-deberta-v2-xxlarge-v1"
-task: "open_qa"
+model_weights: "/data/qbao775/Logical-Equivalence-driven-AMR-Data-Augmentation-for-Representation-Learning/BERT/Checkpoints/reclor/merit-deberta-v2-xxlarge-our-model-v5-bs-16-lr-3e-6-contraposition"
+task: "mc_qa"

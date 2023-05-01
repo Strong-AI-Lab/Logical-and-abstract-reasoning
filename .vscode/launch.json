@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: run_evaluation",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_evaluation.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false,
+            "env":{
+                "CUDA_VISIBLE_DEVICES": "1",
+                "CUDA_LAUNCH_BLOCKING": "1"
+            },
+            "args": [
+                "config/model/merit.yaml",
+                "config/data/reclor.yaml"]
+        }
+    ]
+}
