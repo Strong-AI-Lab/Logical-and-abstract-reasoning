@@ -86,7 +86,9 @@ def main():
         except Exception as e:
             print(f"Error on line {i}: {e}")
             error_logger.exception(e)
-            continue
+        
+        if "limit" in kwargs and i >= int(kwargs["limit"]):
+            break
 
     # Log results
     loggers.end_logging()
