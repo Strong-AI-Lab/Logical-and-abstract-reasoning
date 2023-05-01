@@ -1,0 +1,4 @@
+
+model_name: "merit"
+model_weights: "chitanda/merit-deberta-v2-xxlarge-v1"
+task: "open_qa"

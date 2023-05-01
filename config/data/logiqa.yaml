@@ -1,0 +1,3 @@
+dataset_name: "LogiQA"
+dataset_path: "data/LogiQA/LogiQA_Eval_no_instruction.jsonl"
+task: "mc_qa"
