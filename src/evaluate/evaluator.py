@@ -2,6 +2,8 @@
 import re
 import pandas as pd
 import argparse
+from io import StringIO
+from contextlib import redirect_stdout
 
 import nltk
 
@@ -41,10 +43,10 @@ class Evaluator():
         answer = str(answer)
         target = str(target)
 
-        answer = re.findall(r">>>(.*)\n?", answer)
-        if len(answer) > 1:
+        answer_search = re.findall(r">>>(.*)\n?", answer)
+        if len(answer_search) > 1:
             print(f"Warning: answer has more than one line: {answer}. Disambiguation attempt.")
-            answer = [ans for ans in answer if ans in self.possible_answers]
+            answer = [ans for ans in answer_search if ans in self.possible_answers]
             if len(answer) == 1:
                 answer = answer[0]
             elif len(answer) > 1:
@@ -52,25 +54,88 @@ class Evaluator():
                 answer = None
             else:
                 answer = None
-        elif len(answer) == 1:
-            answer = answer[0]
+        elif len(answer_search) == 1:
+            answer = answer_search[0]
         else:
-            print(f"Warning: answer is empty: {answer}")
+            print(f"Warning: answer is empty: {answer}. Retrying extraction from the code.")
+
+            code_search = re.findall(r"(?:```python\n)?(.*)\n```", answer, re.DOTALL)
+            if len(code_search) == 0:
+                code_search = [re.sub(r"(?:```python\n)", "", answer, re.DOTALL)]
+
+            answer = ""
+            for code in code_search:
+                f = StringIO()
+                with redirect_stdout(f):
+                    try:
+                        exec(code)
+                    except Exception as e:
+                        print(e)
+            answer += f.getvalue()
+
+        if answer is not None:
+            answer = re.sub(r"[^\w,\[\]\(\)]", "", answer)
+        if target is not None:
+            target = re.sub(r"[^\w,\[\]\(\)]", "", target)
+        
+        print(repr(answer), repr(target))
+        return answer == target
+
+    def _evaluate_mcqa(self, answer, target):
+        answer = str(answer)
+        target = str(target)
+        
+        answer_search = re.findall(r"(\w)\.", answer)
+        if len(answer_search) > 1:
+            print(f"Warning: answer has more than one line: {answer}. Aborting.")
             answer = None
-            
+        elif len(answer_search) == 1:
+            answer = answer_search[0]
+        else:
+            print(f"Warning: answer is empty: {answer}. Aborting.")
+            answer = None
+        
+        return answer == target
+
+    def _evaluate_arrow(self, answer, target):
+        answer = str(answer)
+        target = str(target)
+
+        is_tensor = re.search(r"tensor\((\w+)\)", target)
+        if is_tensor:
+            target = is_tensor.group(1)
+        
+        answer_search = re.findall(r"-> ([\[\]\(\)\w,])+", answer)
+        if len(answer_search) > 1:
+            print(f"Warning: answer has more than one line: {answer}. Aborting.")
+            answer = None
+        elif len(answer_search) == 1:
+            answer = answer_search[0]
+        else:
+            print(f"Warning: answer is empty: {answer}. Aborting.")
+            answer = None
+        
         return answer == target
 
 
-
-    def __init__(self, results_file, code=False, pos_tagging=False):
+    def __init__(self, results_file, code=False, pos_tagging=False, multiple_choices=False, arrow=False):
         nltk.download('averaged_perceptron_tagger')
 
         self.results_file = results_file
         self.results_table = pd.read_csv(results_file)
         self.code = code
         self.pos_tagging = pos_tagging
-        
-        self.evaluation_operator = self._evaluate_flex if not self.code else self._evaluate_code
+        self.multiple_choices = multiple_choices
+        self.arrow = arrow
+
+        if self.multiple_choices:
+            self.evaluation_operator = self._evaluate_mcqa
+        elif self.code:
+            self.evaluation_operator = self._evaluate_code
+        elif self.arrow:
+            self.evaluation_operator = self._evaluate_arrow
+        else:
+            self.evaluation_operator = self._evaluate_flex
 
         self.possible_answers = self.results_table["target"].unique()
 
@@ -93,15 +158,17 @@ class Evaluator():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("results_file", type=str, help="Path to the results file")
-    parser.add_argument("--pos_tagging", action="store_true", help="Whether to use pos tagging or not")
-    parser.add_argument("--algo", action="store_true", help="Whether to use code evaluation or not")
-    args = parser.parse_args()
-    results_file = args.results_file
-    pos_tagging = args.pos_tagging
-    code = args.algo
+    group_parser = parser.add_mutually_exclusive_group(required=False)
+    group_parser.add_argument('--pos_tagging', action="store_true", help="Whether to use pos tagging or not")
+    group_parser.add_argument('--algo', action="store_true", help="Whether to use code evaluation or not")
+    group_parser.add_argument('--multiple_choices', action="store_true", help="Whether to use multiple choice evaluation or not")
+    group_parser.add_argument('--arrow', action="store_true", help="Whether to use arrow evaluation or not")
 
-    evaluator = Evaluator(results_file, pos_tagging=pos_tagging, code=code)
+    args = parser.parse_args()
+
+    evaluator = Evaluator(args.results_file, pos_tagging=args.pos_tagging, code=args.algo, multiple_choices=args.multiple_choices, arrow=args.arrow)
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()
     print(f"Accuracy: {acc}")
+    # print(str([(i, int(n)) for i, n in enumerate(evaluator.results_table["accuracy"])]))
