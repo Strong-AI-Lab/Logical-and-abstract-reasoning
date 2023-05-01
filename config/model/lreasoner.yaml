@@ -1,0 +1,4 @@
+
+model_name: "albert"
+model_weights: "/data/qbao775/Logical-and-abstract-reasoning/models/lreasoner/albert_cp_cts19_extn5_len_352_rr_s42_ac1_rev"
+task: "open_qa"

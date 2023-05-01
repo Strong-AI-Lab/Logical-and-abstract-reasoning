@@ -15,6 +15,13 @@ DATASETS = {
     "STATEMENTS" : EvalsDataset,
     "STRINGS" : EvalsDataset,
     "MNLI" : HFDataset,
+    "ReClor" : EvalsDataset,
+    "LogiQA" : EvalsDataset,
+    "LogiQA-V2" : EvalsDataset,
+    "PARARULE-Plus-Depth-2" : EvalsDataset,
+    "PARARULE-Plus-Depth-3" : EvalsDataset,
+    "PARARULE-Plus-Depth-4" : EvalsDataset,
+    "PARARULE-Plus-Depth-5" : EvalsDataset,
 }
 
 

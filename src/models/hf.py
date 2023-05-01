@@ -66,9 +66,10 @@ class HFModel(Model):
 
     def load(self):
         self.model_config = self.model_config_class(**self.model_config_args)
-        self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
+        self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, ignore_mismatched_sizes=True, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.tokenizer.padding_side = 'left'
 
         if self.gpu is not None:

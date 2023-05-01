@@ -1,0 +1,3 @@
+dataset_name: "PARARULE-Plus-Depth-3"
+dataset_path: "data/PARARULE-Plus/Depth3/PARARULE_Plus_Depth3_shuffled_test_evals_no_instruction.jsonl"
+task: "open_qa"

@@ -7,6 +7,7 @@ from .algorithmic import AlgorithmicWrapper
 
 MODELS = {
     "gpt-2": HFModel,
+    "gpt-4": GPTModelChat,
     "gpt-3.5-turbo": GPTModelChat,
     "text-davinci-003": GPTModelCompletion,
     "alpaca": HFModel,
