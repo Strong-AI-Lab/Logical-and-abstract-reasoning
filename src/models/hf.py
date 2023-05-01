@@ -21,6 +21,10 @@ from transformers import (
     AlbertConfig,
     AlbertForMultipleChoice,
     AlbertTokenizer,
+    DebertaV2Config,
+    DebertaV2ForMultipleChoice,
+    DebertaV2Tokenizer,
+
 )
 
 MODEL_CLASSES = {
@@ -31,6 +35,7 @@ MODEL_CLASSES = {
     "xlnet": (XLNetConfig, XLNetForMultipleChoice, XLNetTokenizer),
     "roberta": (RobertaConfig, RobertaForMultipleChoice, RobertaTokenizer),
     "albert": (AlbertConfig, AlbertForMultipleChoice, AlbertTokenizer),
+    "debertav2": (DebertaV2Config, DebertaV2ForMultipleChoice, DebertaV2Tokenizer),
 }
 
 
