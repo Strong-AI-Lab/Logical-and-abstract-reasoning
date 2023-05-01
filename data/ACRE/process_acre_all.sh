@@ -10,7 +10,7 @@ for folder in IID Comp Sys
 do
     for file in train val test
     do
-        python process_data_acre.py raw/$folder/$file.json $type/$folder/$file.jsonl --type $type
+        python process_data_acre.py raw/$folder/$file.json $type/$folder/$file.jsonl --$type
     done 
 done
 
