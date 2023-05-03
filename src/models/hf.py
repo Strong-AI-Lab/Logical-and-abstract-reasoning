@@ -87,8 +87,7 @@ class HFModel(Model):
 
     def answer_query(self, prompt):
         outputs = self.model.generate(**prompt, max_new_tokens=self.max_new_tokens)
-        outputs = outputs[:,-self.max_new_tokens-1:]
-
+        outputs = outputs[:,prompt['input_ids'].size(-1):]
         if self.gpu is not None:
             outputs = outputs.cpu()
 
