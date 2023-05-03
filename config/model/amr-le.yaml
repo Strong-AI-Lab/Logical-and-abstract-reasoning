@@ -1,3 +1,3 @@
 model_name: "debertav2"
-model_weights: "qbao775/AMR-LE-DeBERTa-V2-XXLarge-Contraposition"
-task: "open_qa"
+model_weights: "/data/qbao775/Logical-Equivalence-driven-AMR-Data-Augmentation-for-Representation-Learning/BERT/Checkpoints/reclor/debertav2-xxlarge-contraposition"
+task: "mc_qa"
