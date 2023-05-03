@@ -77,7 +77,8 @@ def main():
                         )
 
     # Perform evaluation
-    for i, line in tqdm(enumerate(loader), total=len(loader)):
+    nb_lines = len(loader) if "limit" not in kwargs else min(len(loader), int(kwargs["limit"]))
+    for i, line in tqdm(enumerate(loader), total=nb_lines):
         try:
             input, label = model.format_data(line)
             response = model.answer_query(input)
