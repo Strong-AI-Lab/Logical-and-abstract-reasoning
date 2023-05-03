@@ -64,3 +64,4 @@ class CSVLogger(Logger):
     def end_logging(self):
         tab = pd.DataFrame(self.data)
         tab.to_csv(self.save_path)
+        print(f"Results saved to {self.save_path}")
