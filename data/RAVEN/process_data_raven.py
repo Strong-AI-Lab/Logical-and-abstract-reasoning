@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(description='Convert RAVEN data split to text a
 parser.add_argument('input_path')
 parser.add_argument('output_path')
 parser.add_argument('--input_path_aux', action='store', help='If input is a xml file, auxiliary npz input file.')
-parser.add_argument('--type', action='store', default='text', help='Type of output: text, symbolic, count, or pixel.')
+parser.add_argument('--type', action='store', default='text', help='Type of output: text, text-open, symbolic, symbolic-open, count, or pixel.')
 
 args = parser.parse_args()
 input_file_path = args.input_path
@@ -21,8 +21,13 @@ output_file_path = args.output_path
 input_file_path_aux = args.input_path_aux
 
 output_type = args.type
-if output_type not in ['text', 'symbolic', 'count', 'pixel']:
+if output_type not in ['text', 'text-open', 'symbolic', 'symbolic-open', 'count', 'pixel']:
     raise ValueError(f"Output type {output_type} not supported.")
+
+open_qa = False
+if output_type.endswith('-open'):
+    open_qa = True
+    output_type = output_type[:-5]
 
 is_folder = os.path.isdir(input_file_path)
 
@@ -36,7 +41,7 @@ else:
 if os.path.isdir(output_file_path):
     raise ValueError(f"Output path {output_file_path} must not be a folder.")
 
-print(f"Writing {('all elements of ' + input_file_path) if is_folder else ('from ' + input_file_path + ' with auxiliary ' + input_file_path_aux)} to {output_file_path} in {output_type} format.")
+print(f"Writing {('all elements of ' + input_file_path) if is_folder else ('from ' + input_file_path + ' with auxiliary ' + input_file_path_aux)} to {output_file_path} in {output_type} format{' (open QA)' if open_qa else ''}.")
 
 
 
@@ -95,18 +100,32 @@ def get_in_tree(root, label, level=0):
     level = max(levels + [level])
     return values, level
 
-def format_sample(problem_panels, answer_panels):
-    sample = {
-        "input": [],
-        "choice_strings": list(string.ascii_uppercase[:ANSWER_SET]),
-        "ideal": ""
-    }
-    sample["input"].append({
-        "role": "system",
-        "content": f"Find the pattern number {PROBLEM_MATRIX+1} that completes the sequence. Pick the letter in front of the correct pattern that logically follows in the sequence from the answer set. "\
-                    + f"Patterns in the sequence are preceded by a number from 1 to {PROBLEM_MATRIX}. "\
-                    + f"Patterns in the answer set are preceded by a letter from A to {string.ascii_uppercase[ANSWER_SET-1]}. Only return the letter in front of the correct pattern."
-    })
+def format_sample(problem_panels, answer_panels, open_qa=False):
+    if open_qa:
+        sample = {
+            "input": [],
+            "ideal": ""
+        }
+    else:
+        sample = {
+            "input": [],
+            "choice_strings": list(string.ascii_uppercase[:ANSWER_SET]),
+            "ideal": ""
+        }
+
+    if open_qa:
+        sample["input"].append({
+            "role": "system",
+            "content": f"Find the pattern number {PROBLEM_MATRIX+1} that completes the sequence. Write the correct pattern with the same format as in the examples. "\
+                        + f"Patterns in the sequence are preceded by a number from 1 to {PROBLEM_MATRIX}. "
+        })
+    else:
+        sample["input"].append({
+            "role": "system",
+            "content": f"Find the pattern number {PROBLEM_MATRIX+1} that completes the sequence. Pick the letter in front of the correct pattern that logically follows in the sequence from the answer set. "\
+                        + f"Patterns in the sequence are preceded by a number from 1 to {PROBLEM_MATRIX}. "\
+                        + f"Patterns in the answer set are preceded by a letter from A to {string.ascii_uppercase[ANSWER_SET-1]}. Only return the letter in front of the correct pattern."
+        })
     
     for i, panel in enumerate(problem_panels):
         sample["input"].append({
@@ -114,15 +133,16 @@ def format_sample(problem_panels, answer_panels):
             "content": f"{i+1}. {panel}"
         })
     
-    for i, panel in enumerate(answer_panels):
-        sample["input"].append({
-            "role": "user",
-            "content": f"{string.ascii_uppercase[i]}. {panel}"
-        })
+    if not open_qa:
+        for i, panel in enumerate(answer_panels):
+            sample["input"].append({
+                "role": "user",
+                "content": f"{string.ascii_uppercase[i]}. {panel}"
+            })
 
     sample["input"].append({
         "role": "user",
-        "content": "The answer is "
+        "content": ("The pattern that logically follows is:\n9. " if open_qa else "The answer is ")
     })
     
     return sample
@@ -357,8 +377,11 @@ for f_name in tqdm.tqdm(get_xml_npz_files(input_list)):
         panel_str = panel_parser(panel)
         panels[i//PROBLEM_MATRIX].append(panel_str)
 
-    sample = format_sample(*panels)
-    sample["ideal"] = ideal
+    sample = format_sample(*panels, open_qa=open_qa)
+    if open_qa:
+        sample["ideal"] = panels[1][string.ascii_uppercase.index(ideal)]
+    else:
+        sample["ideal"] = ideal
     samples.append(sample)
 
 
