@@ -20,13 +20,13 @@ MODELS = {
 }
 
 
-def loadModel(model_name : str, task : str, **kwargs) -> Model:
+def loadModel(model_name : str, task : str, no_code_wrapping : bool = False, **kwargs) -> Model:
     if model_name in MODELS:
         model = MODELS[model_name](**{**{"model_name" : model_name}, **kwargs})
         model.load()
 
         if task == "algo":
-            model = AlgorithmicWrapper(model)
+            model = AlgorithmicWrapper(model, wrap_result=not no_code_wrapping)
         return model
     
     else:

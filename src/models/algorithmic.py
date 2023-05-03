@@ -9,8 +9,10 @@ from src.models.base import Model
 class AlgorithmicWrapper():
 
 
-    def __init__(self, model : Model):
+    def __init__(self, model : Model, wrap_result : bool = True):
         self.inner = model
+        self.wrap_result = wrap_result
+        self.wrap_func = (lambda code, response : f"```python\n{code}\n```\n>>> {response}") if self.wrap_result else (lambda code, response : f"{code}\n>>> {response}")
 
     def load(self) -> None:
         self.inner.load()
@@ -31,7 +33,8 @@ class AlgorithmicWrapper():
                 except Exception as e:
                     print(e)
             response = f.getvalue()
-            responses.append(f"```python\n{code}\n```\n>>> {response}")
+            # responses.append(f"```python\n{code}\n```\n>>> {response}")
+            responses.append(self.wrap_func(code, response))
 
         return responses
     
