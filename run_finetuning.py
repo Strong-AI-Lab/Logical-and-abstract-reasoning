@@ -2,6 +2,7 @@
 import argparse
 import numpy as np
 import yaml
+import datetime
 
 from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
 import evaluate
@@ -77,7 +78,7 @@ def main():
         evaluation_strategy="epoch", 
         per_device_train_batch_size=10, 
         per_device_eval_batch_size=10, 
-        num_train_epochs=10, 
+        num_train_epochs=1, 
        )
     trainer = Seq2SeqTrainer(
         model=model.model,
@@ -87,10 +88,8 @@ def main():
         compute_metrics=compute_metrics,
     )
 
-
     trainer.train()
-
-
+    trainer.save_model(f"fine-tuning-saves/fine-tuned-{model_config['model_name']}-{data_config['dataset_name']}-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}")
 
 
 
