@@ -1,4 +1,6 @@
 
+from typing import Union
+
 from .base import Model
 
 from transformers import (
@@ -75,13 +77,18 @@ class HFModel(Model):
         if self.gpu is not None:
             self.model = self.model.to(self.gpu)
 
-    def format_data(self, data: dict) -> tuple:
+    def format_data(self, data: dict, format_labels : bool = False, padding : Union[bool, str] = True, max_length : int = 2048) -> tuple:
         prompt = self.convert_input_list_to_text(data["input"])
-        tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", padding=True)
+        tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", padding=padding, max_length=max_length)
         ideal = data["ideal"]
 
         if self.gpu is not None:
             tokenized_prompt = {k: v.to(self.gpu) for k, v in tokenized_prompt.items()}
+
+        if format_labels:
+            ideal = self.tokenizer(ideal, return_tensors="pt", padding=padding, max_length=max_length)
+            if self.gpu is not None:
+                ideal = {k: v.to(self.gpu) for k, v in ideal.items()}
 
         return tokenized_prompt, ideal
 
@@ -115,7 +122,7 @@ class HFQAModel(HFModel):
     def _flatten_list(self, l : list) -> list:
         return [item for sublist in l for item in sublist]
 
-    def format_data(self, data: dict) -> tuple:
+    def format_data(self, data: dict, format_labels : bool = False, padding : Union[bool, str] = True, max_length : int = 2048) -> tuple:
         input = data["input"]
         choices = data["choice_strings"]
         label = data["ideal"]
@@ -126,7 +133,7 @@ class HFQAModel(HFModel):
         context = self._flatten_list([[c] * len(choices_texts) for c in context])
         choices_texts = self._flatten_list(self._transpose_list(choices_texts))
 
-        tokenized_data = self.tokenizer(context, choices_texts, return_tensors="pt", padding=True)
+        tokenized_data = self.tokenizer(context, choices_texts, return_tensors="pt", padding=padding, max_length=max_length)
         tokenized_data = {k: v.reshape(batch_size, -1, v.size(-1)) for k, v in tokenized_data.items()}
 
         if self.gpu is not None:

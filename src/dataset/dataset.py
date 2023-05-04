@@ -1,5 +1,6 @@
 
 import json
+from typing import Callable
 
 from torch.utils.data import IterableDataset
 import datasets
@@ -55,3 +56,21 @@ class HFDataset(IterableDataset):
 
         eval_dict = {"input" : input, "ideal" : data["label"]}
         return eval_dict
+
+
+class FineTuningDatasetWrapper():
+    def __init__(self, dataset : IterableDataset, tokenizer : Callable, max_length : int = 512, **kwargs):
+        self.dataset = dataset
+        self.tokenizer = tokenizer
+        self.max_length = int(max_length)
+
+    def _gen(self):
+        for value in self.dataset:
+            input, label = self.tokenizer(value, format_labels=True, padding="max_length", max_length=self.max_length)
+            yield {"input_ids": input["input_ids"], "attention_mask": input["attention_mask"], "labels": label["input_ids"]}
+
+    def get(self):
+        return datasets.Dataset.from_generator(
+            self._gen, 
+            )
+

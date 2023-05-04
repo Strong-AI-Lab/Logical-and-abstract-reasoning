@@ -4,3 +4,4 @@ __pycache__/
 env/
 wandb/
 logs/
+fine-tuning-output/

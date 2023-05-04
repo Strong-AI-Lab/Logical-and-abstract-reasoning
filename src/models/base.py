@@ -17,6 +17,8 @@ class Model():
     def convert_input_list_to_text(self, input_list : list, separator = "\n", skip_instructions : bool = False) -> str:
         if skip_instructions:
             input_list = input_list[1:]
-        
-        return [separator.join([inp["content"][i] for inp in input_list]) for i in range(len(input_list[0]["content"]))]
-        
+
+        if type(input_list[0]["content"]) is list:
+            return [separator.join([inp["content"][i] for inp in input_list]) for i in range(len(input_list[0]["content"]))] # batch input
+        else:
+            return separator.join([inp["content"] for inp in input_list]) # single input
