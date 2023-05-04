@@ -67,10 +67,8 @@ class FineTuningDatasetWrapper():
     def _gen(self):
         for value in self.dataset:
             input, label = self.tokenizer(value, format_labels=True, padding="max_length", max_length=self.max_length)
-            yield {"input_ids": input["input_ids"], "attention_mask": input["attention_mask"], "labels": label["input_ids"]}
+            yield {"input_ids": input["input_ids"][0], "attention_mask": input["attention_mask"][0], "labels": label["input_ids"][0]}
 
     def get(self):
-        return datasets.Dataset.from_generator(
-            self._gen, 
-            )
+        return datasets.Dataset.from_generator(self._gen)
 

@@ -58,6 +58,8 @@ def main():
     def compute_metrics(eval_pred):
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
+        predictions = predictions.reshape(-1).astype(dtype=np.int32)
+        labels = labels.reshape(-1).astype(dtype=np.int32)
         return metric.compute(predictions=predictions, references=labels)
 
     # Load model
@@ -73,9 +75,9 @@ def main():
     training_args = Seq2SeqTrainingArguments(
         output_dir="fine-tuning-output", 
         evaluation_strategy="epoch", 
-        per_device_train_batch_size=1, 
-        per_device_eval_batch_size=1, 
-        num_train_epochs=1, 
+        per_device_train_batch_size=10, 
+        per_device_eval_batch_size=10, 
+        num_train_epochs=10, 
        )
     trainer = Seq2SeqTrainer(
         model=model.model,
