@@ -76,7 +76,7 @@ class Evaluator():
             target = is_tensor.group(1)
 
         answer_search = re.findall(r">>>(.*)\n?", answer)
-        if len(answer_search) > 1:
+        if len(answer_search) > 1 and not self.force_code_run:
             print(f"Warning: answer has more than one line: {answer}. Disambiguation attempt.")
             answer = [ans for ans in answer_search if ans in self.possible_answers]
             if len(answer) == 1:
@@ -86,10 +86,11 @@ class Evaluator():
                 answer = None
             else:
                 answer = None
-        elif len(answer_search) == 1:
+        elif len(answer_search) == 1 and not self.force_code_run:
             answer = answer_search[0]
         else:
-            print(f"Warning: answer is empty: {answer}. Retrying extraction from the code.")
+            if not self.force_code_run:
+                print(f"Warning: answer is empty: {answer}. Retrying extraction from the code.")
 
             code_search = re.findall(r"(?:```(?:python)?\n)*((?:def |print\().*)\n```", answer, re.DOTALL)
             if len(code_search) == 0:
@@ -155,7 +156,15 @@ class Evaluator():
         return answer == target
 
 
-    def __init__(self, results_file, strict=False, num=False, lt=False, code=False, pos_tagging=False, multiple_choices=False, arrow=False):
+    def __init__(self, results_file, 
+                        strict=False, 
+                        num=False, 
+                        lt=False, 
+                        code=False, 
+                        force_code_run=False,
+                        pos_tagging=False, 
+                        multiple_choices=False, 
+                        arrow=False):
         nltk.download('averaged_perceptron_tagger')
 
         self.results_file = results_file
@@ -164,6 +173,7 @@ class Evaluator():
         self.num = num
         self.lt = lt
         self.code = code
+        self.force_code_run = force_code_run
         self.pos_tagging = pos_tagging
         self.multiple_choices = multiple_choices
         self.arrow = arrow
@@ -212,10 +222,19 @@ if __name__ == "__main__":
     group_parser.add_argument('--algo', action="store_true", help="Whether to use code evaluation or not")
     group_parser.add_argument('--multiple_choices', action="store_true", help="Whether to use multiple choice evaluation or not")
     group_parser.add_argument('--arrow', action="store_true", help="Whether to use arrow evaluation or not")
+    parser.add_argument('--re_run', action="store_true", help="Whether to force recomputation of answer in algo mode")
 
     args = parser.parse_args()
 
-    evaluator = Evaluator(args.results_file, strict=args.strict, num=args.num, lt=args.lt, pos_tagging=args.pos_tagging, code=args.algo, multiple_choices=args.multiple_choices, arrow=args.arrow)
+    evaluator = Evaluator(args.results_file, 
+                        strict=args.strict, 
+                        num=args.num, 
+                        lt=args.lt, 
+                        pos_tagging=args.pos_tagging, 
+                        code=args.algo, 
+                        force_code_run=args.re_run,
+                        multiple_choices=args.multiple_choices, 
+                        arrow=args.arrow)
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()
