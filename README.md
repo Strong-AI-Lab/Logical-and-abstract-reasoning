@@ -20,7 +20,9 @@ pip install -r requirements.txt
 
 ## Use
 
-To use the repository, use the following command:
+### Evaluation
+
+To evaluate a model in the repository, use the following command:
 ```
 python run_evaluation config/model/<model_config.yaml> config/data/<data_config.yaml> --<kwarg_name> <kwarg>
 ```
@@ -31,6 +33,16 @@ By default, all the results are saved in a csv file in the `logs/` folder. You c
 ```
 python src/evaluate/evaluator.py logs/<results_file.csv>
 ```
+
+### Fine-tuning
+
+To fine-tune a model on a given dataset, run the following:
+```
+python run_finetuning.py config/model/<model_config.yaml> config/data/<data_config.yaml> config/trainer/<trainer_config.yaml>
+```
+The configuration files work similarly as for evaluation. The `<model_config.yaml>` file contains additoinal configuration for training. The logs are saved in `fine-tuning-output/` and the model weights are saved in `fine-tuning-saves/`.
+
+Currently, only HuggingFace models can be fine-tuned.
 
 
 ## Models
