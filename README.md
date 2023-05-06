@@ -18,6 +18,12 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
+You may need to install [transformers](https://huggingface.co/docs/transformers/index) from the repository:
+```
+pip install git+https://github.com/huggingface/transformers
+```
+
+
 ## Use
 
 ### Evaluation
