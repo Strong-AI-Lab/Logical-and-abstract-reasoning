@@ -86,12 +86,12 @@ def main():
 
     # Load model
     model = loadModel(**{**model_config, **kwargs})
-    if type(model) is not HFModel:
+    if not isinstance(model, HFModel):
         raise ValueError("Only HFModel supported for finetuning.")
 
     # Load evaluation dataset
     data = loadDataset(**{**data_config, **kwargs})
-    wrapped_data = FineTuningDatasetWrapper(data, tokenizer=model.format_data, **{**trainer_config, **kwargs}).get()
+    wrapped_data = FineTuningDatasetWrapper(data, tokenize=model.format_data, **{**trainer_config, **kwargs}).get()
 
     # Select trainer
     if "eval_device" in trainer_config:

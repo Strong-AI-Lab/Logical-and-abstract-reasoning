@@ -73,6 +73,7 @@ class HFModel(Model):
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
         self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.tokenizer.padding_side = 'left'
+        self.model.resize_token_embeddings(len(self.tokenizer))
 
         if self.gpu is not None:
             self.model = self.model.to(self.gpu)
@@ -105,6 +106,13 @@ class HFModel(Model):
 class HFQAModel(HFModel):
 
     def _extract_choices_text(self, input, choice_values) -> list:
+        if hasattr(choice_values, "tolist"): # if tensor, convert to list
+            choice_values = choice_values.tolist()
+        
+        if not isinstance(choice_values[0], list): # single batch
+            choice_values = [[choice] for choice in choice_values]
+            input = [{key: [val] for key, val in inp_dict.items()} for inp_dict in input]
+
         choice_idxs = []
         for choice in choice_values:
             for i, inp in enumerate(input):
@@ -127,8 +135,7 @@ class HFQAModel(HFModel):
         choices = data["choice_strings"]
         label = data["ideal"]
 
-        batch_size = len(label)
-        
+        batch_size = len(label) if isinstance(label, list) else 1
         context, choices_texts = self._extract_choices_text(input, choices)
         context = self._flatten_list([[c] * len(choices_texts) for c in context])
         choices_texts = self._flatten_list(self._transpose_list(choices_texts))
@@ -140,7 +147,7 @@ class HFQAModel(HFModel):
             tokenized_data = {k: v.to(self.gpu) for k, v in tokenized_data.items()}
 
         label_idxs = []
-        for i in range(len(label)):
+        for i in range(batch_size):
             choices_i = [c[i] for c in choices]
             label_idx = choices_i.index(label[i])
             label_idxs.append(label_idx)

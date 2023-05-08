@@ -18,7 +18,7 @@ class Model():
         if skip_instructions:
             input_list = input_list[1:]
 
-        if type(input_list[0]["content"]) is list:
+        if isinstance(input_list[0]["content"], list):
             return [separator.join([inp["content"][i] for inp in input_list]) for i in range(len(input_list[0]["content"]))] # batch input
         else:
             return separator.join([inp["content"] for inp in input_list]) # single input

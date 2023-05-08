@@ -59,15 +59,22 @@ class HFDataset(IterableDataset):
 
 
 class FineTuningDatasetWrapper():
-    def __init__(self, dataset : IterableDataset, tokenizer : Callable, max_length : int = 512, **kwargs):
+    def __init__(self, dataset : IterableDataset, tokenize : Callable, max_length : int = 512, **kwargs):
         self.dataset = dataset
-        self.tokenizer = tokenizer
+        self.tokenize = tokenize
         self.max_length = int(max_length)
 
     def _gen(self):
         for value in self.dataset:
-            input, label = self.tokenizer(value, format_labels=True, padding="max_length", max_length=self.max_length)
-            yield {"input_ids": input["input_ids"][0], "attention_mask": input["attention_mask"][0], "labels": label["input_ids"][0]}
+            input, label = self.tokenize(value, format_labels=True, padding="max_length", max_length=self.max_length)
+            if isinstance(label, dict):
+                label = label["input_ids"][0]
+            else:
+                label = label[0]
+            if input["input_ids"][0].size(-1) > self.max_length:
+                print(f"Warning: input too long: {input['input_ids'][0].size(-1)} > {self.max_length}.")
+
+            yield {"input_ids": input["input_ids"][0], "attention_mask": input["attention_mask"][0], "labels": label}
 
     def get(self):
         return datasets.Dataset.from_generator(self._gen)
