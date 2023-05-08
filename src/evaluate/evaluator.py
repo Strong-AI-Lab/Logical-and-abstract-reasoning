@@ -55,7 +55,7 @@ class Evaluator():
                 answer = choices[0][1]
             elif len(choices) > 1:
                 print(f"Warning: more than one possible answer: {choices}")
-                answer = None
+                answer = None if self.select_ans == "none" else choices[0][1] if self.select_ans == "first" else choices[-1][1]
             else:
                 answer = None
                 
@@ -83,7 +83,7 @@ class Evaluator():
                 answer = answer[0]
             elif len(answer) > 1:
                 print(f"Warning: more than one possible answer: {answer}")
-                answer = None
+                answer = None if self.select_ans == "none" else answer[0] if self.select_ans == "first" else answer[-1]
             else:
                 answer = None
         elif len(answer_search) == 1 and not self.force_code_run:
@@ -142,7 +142,7 @@ class Evaluator():
         if len(answer_search) > 1:
             print(f"Warning: answer has more than one line: {answer}.")
             # answer = None
-            answer = answer_search[-1]
+            answer = answer_search[0] if self.select_ans == "first" else answer_search[-1] if self.select_ans == "last" else None
         elif len(answer_search) == 1:
             answer = answer_search[0]
         else:
@@ -164,7 +164,8 @@ class Evaluator():
                         force_code_run=False,
                         pos_tagging=False, 
                         multiple_choices=False, 
-                        arrow=False):
+                        arrow=False,
+                        select_ans="first"):
         nltk.download('averaged_perceptron_tagger')
 
         self.results_file = results_file
@@ -177,6 +178,9 @@ class Evaluator():
         self.pos_tagging = pos_tagging
         self.multiple_choices = multiple_choices
         self.arrow = arrow
+
+        assert select_ans in ["first", "last", "none"], f"select_ans must be one of [first, last, none]."
+        self.select_ans = select_ans
 
         if self.multiple_choices:
             self.evaluation_operator = self._evaluate_mcqa
@@ -223,6 +227,7 @@ if __name__ == "__main__":
     group_parser.add_argument('--multiple_choices', action="store_true", help="Whether to use multiple choice evaluation or not")
     group_parser.add_argument('--arrow', action="store_true", help="Whether to use arrow evaluation or not")
     parser.add_argument('--re_run', action="store_true", help="Whether to force recomputation of answer in algo mode")
+    parser.add_argument('--select_ans', type=str, default="first", help="If multiple answers, which one to select: [first, last, none].")
 
     args = parser.parse_args()
 
@@ -234,7 +239,8 @@ if __name__ == "__main__":
                         code=args.algo, 
                         force_code_run=args.re_run,
                         multiple_choices=args.multiple_choices, 
-                        arrow=args.arrow)
+                        arrow=args.arrow,
+                        select_ans=args.select_ans)
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()
