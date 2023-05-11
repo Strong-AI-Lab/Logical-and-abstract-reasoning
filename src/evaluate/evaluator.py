@@ -133,8 +133,8 @@ class Evaluator():
         
         answer_search = re.findall(r"(\w)\.", answer)
         if len(answer_search) > 1:
-            print(f"Warning: answer has more than one line: {answer}. Aborting.")
-            answer = None
+            print(f"Warning: answer has more than one line: {answer}.")
+            answer = None if self.select_ans == "none" else answer_search[0] if self.select_ans == "first" else answer_search[-1]
         elif len(answer_search) == 1:
             answer = answer_search[0]
         else:
