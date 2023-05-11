@@ -16,8 +16,8 @@ with open("/data/qbao775/Logical-and-abstract-reasoning/data/LogiQA/LogiQA_Eval_
                         {"role": "user", "content": None}], 
                 "choice_strings": ["A", "B", "C", "D"],
                 "ideal": None}
-        temp["input"][0]["content"] = "Passage: " + item["context"]
-        temp["input"][1]["content"] = "Question: " + item["question"]
+        temp["input"][0]["content"] = item["context"]
+        temp["input"][1]["content"] = item["question"] + " Please only return the letter in front of your predict correct option, A, B, C or D."
         temp["input"][2]["content"] = "A. " + item["answers"][0]
         temp["input"][3]["content"] = "B. " + item["answers"][1]
         temp["input"][4]["content"] = "C. " + item["answers"][2]
