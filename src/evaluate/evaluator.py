@@ -92,26 +92,40 @@ class Evaluator():
             if not self.force_code_run:
                 print(f"Warning: answer is empty: {answer}. Retrying extraction from the code.")
 
-            code_search = re.findall(r"(?:```(?:python)?\n)*((?:def |print\().*)\n```", answer, re.DOTALL)
+            code_search = re.findall(r"(?:```(?:python)?\n)*((?:\s*def |print\()[^`]*)\n?```", answer, re.DOTALL)
             if len(code_search) == 0:
                 code_search = [re.sub(r"(?:```python\n)", "", answer, re.DOTALL)]
 
             answer = ""
+            abort = None
             for code in code_search:
                 f = StringIO()
                 with redirect_stdout(f):
                     try:
                         exec(code)
                     except Exception as e:
-                        print(e)
-            answer += f.getvalue()
+                        if self.test_compiled:
+                            abort = str(e)
+                            break
+                        else:
+                            print(e)
+            if abort is None:
+                answer += f.getvalue()
+            else:
+                print(code_search)
+                print(f"Warning: code failed to run: {code}.\n{abort}\nAborting.")
+                answer = None
+
 
         if answer is not None:
             answer = re.sub(r"[^\w,\[\]\(\)]", "", answer)
         if target is not None:
             target = re.sub(r"[^\w,\[\]\(\)]", "", target)
-        
-        return answer == target
+
+        if not self.test_compiled:
+            return answer == target
+        else:
+            return answer is not None
 
     def _evaluate_mcqa(self, answer, target):
         answer = str(answer)
@@ -161,6 +175,7 @@ class Evaluator():
                         num=False, 
                         lt=False, 
                         code=False, 
+                        test_compiled=False,
                         force_code_run=False,
                         pos_tagging=False, 
                         multiple_choices=False, 
@@ -174,6 +189,7 @@ class Evaluator():
         self.num = num
         self.lt = lt
         self.code = code
+        self.test_compiled = test_compiled
         self.force_code_run = force_code_run
         self.pos_tagging = pos_tagging
         self.multiple_choices = multiple_choices
@@ -228,6 +244,7 @@ if __name__ == "__main__":
     group_parser.add_argument('--arrow', action="store_true", help="Whether to use arrow evaluation or not")
     parser.add_argument('--re_run', action="store_true", help="Whether to force recomputation of answer in algo mode")
     parser.add_argument('--select_ans', type=str, default="first", help="If multiple answers, which one to select: [first, last, none].")
+    parser.add_argument('--test_compiled', action="store_true", help="Whether to test the compiled version of the code or not")
 
     args = parser.parse_args()
 
@@ -237,6 +254,7 @@ if __name__ == "__main__":
                         lt=args.lt, 
                         pos_tagging=args.pos_tagging, 
                         code=args.algo, 
+                        test_compiled=args.test_compiled,
                         force_code_run=args.re_run,
                         multiple_choices=args.multiple_choices, 
                         arrow=args.arrow,
