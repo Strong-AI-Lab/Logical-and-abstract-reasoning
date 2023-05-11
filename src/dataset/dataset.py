@@ -4,6 +4,7 @@ from typing import Callable
 
 from torch.utils.data import IterableDataset
 import datasets
+import transformers
 
     
 
@@ -67,7 +68,7 @@ class FineTuningDatasetWrapper():
     def _gen(self):
         for value in self.dataset:
             input, label = self.tokenize(value, format_labels=True, padding="max_length", max_length=self.max_length)
-            if isinstance(label, dict):
+            if isinstance(label, dict) or isinstance(label, transformers.tokenization_utils_base.BatchEncoding):
                 label = label["input_ids"][0]
             else:
                 label = label[0]

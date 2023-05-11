@@ -31,7 +31,9 @@ from transformers import (
 
 MODEL_CLASSES = {
     "gpt-2": (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
+    "llama": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "alpaca": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
+    "alpaca-lora": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "bert": (BertConfig, AutoModelForCausalLM, BertTokenizer),
     "bert-qa": (BertConfig, BertForMultipleChoice, BertTokenizer),
     "xlnet": (XLNetConfig, XLNetForMultipleChoice, XLNetTokenizer),
@@ -68,11 +70,12 @@ class HFModel(Model):
 
     def load(self):
         self.model_config = self.model_config_class(**self.model_config_args)
-        self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, ignore_mismatched_sizes=True, **self.model_args)
+        self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
-        self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-        self.tokenizer.padding_side = 'left'
+        self.tokenizer.pad_token_id = self.tokenizer.vocab_size - 1
+        # self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        # self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        # self.tokenizer.padding_side = 'left'
         self.model.resize_token_embeddings(len(self.tokenizer))
 
         if self.gpu is not None:

@@ -11,12 +11,14 @@ MODELS = {
     "gpt-3.5-turbo": GPTModelChat,
     "text-davinci-003": GPTModelCompletion,
     "alpaca": HFModel,
+    "alpaca-lora": HFModel,
     "bert": HFModel,
     "bert-qa": HFQAModel,
     "xlnet": HFQAModel,
     "roberta": HFQAModel,
     "albert": HFQAModel,
     "debertav2": HFQAModel,
+    "llama": HFModel,
 }
 
 

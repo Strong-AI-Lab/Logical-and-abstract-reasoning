@@ -1,6 +1,6 @@
 
-model_name: "alpaca"
-model_weights: "/data/home/ggen187/weights/alpaca/7B"
+model_name: "alpaca-lora"
+model_weights: "chainyo/alpaca-lora-7b"
 task: "algo"
 max_new_tokens: 128
 model_config_args:
