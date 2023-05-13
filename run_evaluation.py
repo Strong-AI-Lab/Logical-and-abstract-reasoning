@@ -4,6 +4,7 @@ import logging
 import yaml
 from tqdm import tqdm
 import datetime
+import time
 
 from torch.utils.data import DataLoader
 
@@ -88,6 +89,8 @@ def main():
             print(f"Error on line {i}: {e}")
             error_logger.exception(e)
         
+        if "sleep" in kwargs:
+            time.sleep(float(kwargs["sleep"]))
         if "limit" in kwargs and i >= int(kwargs["limit"]):
             break
 
