@@ -19,6 +19,7 @@ MODELS = {
     "albert": HFQAModel,
     "debertav2": HFQAModel,
     "llama": HFModel,
+    "vicuna": HFModel,
 }
 
 

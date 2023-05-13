@@ -33,6 +33,7 @@ MODEL_CLASSES = {
     "gpt-2": (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
     "llama": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "alpaca": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
+    "vicuna": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "alpaca-lora": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "bert": (BertConfig, AutoModelForCausalLM, BertTokenizer),
     "bert-qa": (BertConfig, BertForMultipleChoice, BertTokenizer),
