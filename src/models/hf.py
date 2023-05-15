@@ -3,6 +3,7 @@ from typing import Union
 
 from .base import Model
 
+from torch import Tensor
 from transformers import (
     GPT2Config,
     GPT2LMHeadModel,
@@ -38,7 +39,8 @@ MODEL_CLASSES = {
     "bert": (BertConfig, AutoModelForCausalLM, BertTokenizer),
     "bert-qa": (BertConfig, BertForMultipleChoice, BertTokenizer),
     "xlnet": (XLNetConfig, XLNetForMultipleChoice, XLNetTokenizer),
-    "roberta": (RobertaConfig, RobertaForMultipleChoice, RobertaTokenizer),
+    "roberta": (None, RobertaForMultipleChoice, RobertaTokenizer),
+    "roberta-ar": (None, RobertaForMultipleChoice, RobertaTokenizer),
     "albert": (AlbertConfig, AlbertForMultipleChoice, AlbertTokenizer),
     "debertav2": (DebertaV2Config, DebertaV2ForMultipleChoice, DebertaV2Tokenizer),
 }
@@ -70,7 +72,10 @@ class HFModel(Model):
         self.tokenizer = None
 
     def load(self):
-        self.model_config = self.model_config_class(**self.model_config_args)
+        if self.model_config_class is not None:
+            self.model_config = self.model_config_class(**self.model_config_args)
+        else:
+            self.model_config = None
         self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
         self.tokenizer.pad_token_id = self.tokenizer.vocab_size - 1
@@ -110,17 +115,10 @@ class HFModel(Model):
 class HFQAModel(HFModel):
 
     def _extract_choices_text(self, input, choice_values) -> list:
-        if hasattr(choice_values, "tolist"): # if tensor, convert to list
-            choice_values = choice_values.tolist()
-        
-        if not isinstance(choice_values[0], list): # single batch
-            choice_values = [[choice] for choice in choice_values]
-            input = [{key: [val] for key, val in inp_dict.items()} for inp_dict in input]
-
         choice_idxs = []
         for choice in choice_values:
             for i, inp in enumerate(input):
-                if inp["content"][0].startswith(choice[0] + '.'):
+                if inp["content"][0].startswith(str(choice[0]) + '.'):
                     choice_idxs.append(i)
                     
         context = self.convert_input_list_to_text([c for i, c in enumerate(input) if i not in choice_idxs])
@@ -138,6 +136,19 @@ class HFQAModel(HFModel):
         input = data["input"]
         choices = data["choice_strings"]
         label = data["ideal"]
+
+        if (not isinstance(label, list) and not isinstance(label, tuple) and not isinstance(label, Tensor)) or (isinstance(label, Tensor) and label.size(0) == 1): # single batch
+            input = [{key: [val] for key, val in inp_dict.items()} for inp_dict in input]
+            choices = [[choice] for choice in choices]
+            label = [label]
+        if hasattr(choices, "tolist"): # if choices is tensor, convert to list
+            choices = choices.tolist()
+        elif hasattr(choices[0], "tolist"): # if choices is list of tensors, convert to list of lists
+            choices = [choice.tolist() for choice in choices]
+        if hasattr(label, "tolist"): # if label is tensor, convert to list
+            label = label.tolist()
+        elif hasattr(label[0], "tolist"): # if label is list of tensors, convert to list of lists
+            label = [l.tolist() for l in label]
 
         batch_size = len(label) if isinstance(label, list) else 1
         context, choices_texts = self._extract_choices_text(input, choices)

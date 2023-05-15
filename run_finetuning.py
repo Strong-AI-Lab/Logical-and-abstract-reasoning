@@ -4,6 +4,7 @@ import numpy as np
 import yaml
 import datetime
 
+import torch
 from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
 import evaluate
 
@@ -109,10 +110,14 @@ def main():
         train_dataset=wrapped_data,
         eval_dataset=wrapped_data,
         compute_metrics=compute_metrics,
+        optimizers=(torch.optim.SGD(model.model.parameters(), lr=trainer_config["training_arguments"]["learning_rate"]), None)
     )
 
     trainer.train()
-    trainer.save_model(f"fine-tuning-saves/fine-tuned-{model_config['model_name']}-{data_config['dataset_name']}-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}")
+
+    save_path = f"fine-tuning-saves/fine-tuned-{model_config['model_name']}-{data_config['dataset_name']}-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    trainer.save_model(save_path)
+    model.tokenizer.save_pretrained(save_path)
 
 
 

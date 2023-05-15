@@ -16,6 +16,7 @@ MODELS = {
     "bert-qa": HFQAModel,
     "xlnet": HFQAModel,
     "roberta": HFQAModel,
+    "roberta-ar": HFQAModel,
     "albert": HFQAModel,
     "debertav2": HFQAModel,
     "llama": HFModel,
