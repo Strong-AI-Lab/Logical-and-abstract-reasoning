@@ -109,8 +109,7 @@ def main():
         args=training_args,
         train_dataset=wrapped_data,
         eval_dataset=wrapped_data,
-        compute_metrics=compute_metrics,
-        optimizers=(torch.optim.SGD(model.model.parameters(), lr=trainer_config["training_arguments"]["learning_rate"]), None)
+        compute_metrics=compute_metrics
     )
 
     trainer.train()
