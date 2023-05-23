@@ -152,7 +152,7 @@ class Evaluator():
             target = is_tensor.group(1)
         target = re.sub(r"^\s+","", target)
         target = re.sub(r"\s+$","", target)
-        answer_search = re.findall(r"(?:^|->|(?:answer|Answer|output|output list|function|solution|I)(?: for(?: (?:the|this)? (?:input|test case))? \[[\d,\s]+\])?\s*(?:is|is:|would be|should be|should return|returns|will be|will return|\:))\s*`?([\[\]\(\)\w, ]+)`?", answer)
+        answer_search = re.findall(r"(?:^|->|(?:answer|Answer|ANSWER|output|output list|function|solution|I)(?: for(?: (?:the|this)? (?:input|test case))? \[[\d,\s]+\])?\s*(?:is|is:|would be|should be|should return|returns|will be|will return|\:))\s*`?([\[\]\(\)\w, ]+)`?", answer)
         if len(answer_search) > 1:
             print(f"Warning: answer has more than one line: {answer}.")
             # answer = None
@@ -169,6 +169,31 @@ class Evaluator():
         
         return answer == target
 
+    def _evaluate_cot(self, answer, target):
+        answer = str(answer)
+        target = str(target)
+
+        answer_search = re.findall(r"(?:ANSWER:\s*(?:[\s\w\[\]\(\),']+(?:is |should be |:))?)"+f"({self.answer_type})", answer)
+        if len(answer_search) > 1:
+            print(f"Warning: answer has more than one line: {answer}.")
+            # answer = None
+            answer = answer_search[0] if self.select_ans == "first" else answer_search[-1] if self.select_ans == "last" else None
+        elif len(answer_search) == 1:
+            answer = answer_search[0]
+        else:
+            print(f"Warning: answer is empty: {answer}. Aborting.")
+            answer = None
+
+        if answer is not None:
+            answer = re.sub(r"\s+","", answer)
+            target = re.sub(r"\s+","", target)
+            is_tensor = re.search(r"tensor\((\w+)\)", target)
+            if is_tensor:
+                target = is_tensor.group(1)
+        print(answer, target, answer==target)
+        return answer == target
+
+
 
     def __init__(self, results_file, 
                         strict=False, 
@@ -180,7 +205,9 @@ class Evaluator():
                         pos_tagging=False, 
                         multiple_choices=False, 
                         arrow=False,
-                        select_ans="first"):
+                        cot=False,
+                        select_ans="first",
+                        answer_type="all"):
         nltk.download('averaged_perceptron_tagger')
 
         self.results_file = results_file
@@ -194,6 +221,17 @@ class Evaluator():
         self.pos_tagging = pos_tagging
         self.multiple_choices = multiple_choices
         self.arrow = arrow
+        self.cot = cot
+
+        assert answer_type in ["num", "char", "list", "all"], f"answer_type must be one of [num, char, list, all]."
+        if answer_type == "num":
+            self.answer_type= r"\d+"
+        elif answer_type == "char":
+            self.answer_type= r"\w+"
+        elif answer_type == "list":
+            self.answer_type= r"\[[\w\s,]+\]"
+        else:
+            self.answer_type= r".+"
 
         assert select_ans in ["first", "last", "none"], f"select_ans must be one of [first, last, none]."
         self.select_ans = select_ans
@@ -210,6 +248,8 @@ class Evaluator():
             self.evaluation_operator = self._evaluate_arrow
         elif self.strict:
             self.evaluation_operator = self._evaluate_strict
+        elif self.cot:
+            self.evaluation_operator = self._evaluate_cot
         else:
             self.evaluation_operator = self._evaluate_flex
 
@@ -242,9 +282,11 @@ if __name__ == "__main__":
     group_parser.add_argument('--algo', action="store_true", help="Whether to use code evaluation or not")
     group_parser.add_argument('--multiple_choices', action="store_true", help="Whether to use multiple choice evaluation or not")
     group_parser.add_argument('--arrow', action="store_true", help="Whether to use arrow evaluation or not")
+    group_parser.add_argument('--cot', action="store_true", help="Whether to use chain-of-thought evaluation or not")
     parser.add_argument('--re_run', action="store_true", help="Whether to force recomputation of answer in algo mode")
     parser.add_argument('--select_ans', type=str, default="first", help="If multiple answers, which one to select: [first, last, none].")
     parser.add_argument('--test_compiled', action="store_true", help="Whether to test the compiled version of the code or not")
+    parser.add_argument('--answer_type', type=str, default="all", help="Type of answer to extract: [num, char, list, all].")
 
     args = parser.parse_args()
 
@@ -258,7 +300,9 @@ if __name__ == "__main__":
                         force_code_run=args.re_run,
                         multiple_choices=args.multiple_choices, 
                         arrow=args.arrow,
-                        select_ans=args.select_ans)
+                        cot=args.cot,
+                        select_ans=args.select_ans,
+                        answer_type=args.answer_type)
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()
