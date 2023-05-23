@@ -48,13 +48,14 @@ MODEL_CLASSES = {
 
 class HFModel(Model):
 
-    def __init__(self, model_name, model_weights, model_args : dict = {}, model_config_args : dict = {}, gpu : str = None, max_new_tokens=30, **kwargs):
+    def __init__(self, model_name, model_weights, model_args : dict = {}, model_config_args : dict = {}, gpu : str = None, load_config : bool = True, max_new_tokens=30, **kwargs):
         self.model_name = model_name
         self.model_weights = model_weights
         self.model_args = model_args
         self.model_config_args = model_config_args
         self.gpu = gpu
         self.max_new_tokens = max_new_tokens
+        self.load_config = load_config
 
         try:
             self.model_config_class, self.model_class, self.tokenizer_class = MODEL_CLASSES[model_name]
@@ -66,6 +67,8 @@ class HFModel(Model):
             else:
                 raise ValueError(f"Model {model_name} not found. If you want to use a custom model, please provide the model_config_class, model_class and tokenizer_class parameters.")
 
+        if not self.load_config:
+            self.model_config_class = None
 
         self.model_config = None
         self.model = None
@@ -74,8 +77,7 @@ class HFModel(Model):
     def load(self):
         if self.model_config_class is not None:
             self.model_config = self.model_config_class(**self.model_config_args)
-        else:
-            self.model_config = None
+        
         self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
         self.tokenizer.pad_token_id = self.tokenizer.vocab_size - 1
