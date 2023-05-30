@@ -67,7 +67,7 @@ def get_trial_symbolic(objects, label):
 
 
 # Text translation functions
-LIGHT_DICT_TEXT = [ "on", "off", "undetermined"]
+LIGHT_DICT_TEXT = ["off", "undetermined", "on"]
 with open("object_dict.json", "r") as object_dict_file:
     OBJECT_DICT_TEXT = json.load(object_dict_file)
     
@@ -112,7 +112,8 @@ def get_trial_text(objects, label):
         c = obj_desc["color"]
         s = obj_desc["shape"]
         t = obj_desc["material"]
-        object_text += f"A {c} {s} object in {t} is visible. The light is "
+        object_text += f"A {c} {s} in {t} is visible. "
+    object_text += "The state of the light is "
     
     return [
                 {
