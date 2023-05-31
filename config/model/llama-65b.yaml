@@ -1,6 +1,6 @@
 
 model_name: "llama"
-model_weights: "/data/home/ggen187/weights/llama/65B/"
+model_weights: "/data/shared/llama/65B/"
 task: "open_qa"
 max_new_tokens: 128
 load_config: false
