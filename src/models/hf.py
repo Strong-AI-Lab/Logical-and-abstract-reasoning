@@ -98,6 +98,10 @@ class HFModel(Model):
             tokenized_prompt = {k: v.to(self.gpu) for k, v in tokenized_prompt.items()}
 
         if format_labels:
+            if isinstance(ideal, list):
+                ideal = [str(i) for i in ideal]
+            else:
+                ideal = str(ideal)
             ideal = self.tokenizer(ideal, return_tensors="pt", padding=padding, max_length=max_length)
             if self.gpu is not None:
                 ideal = {k: v.to(self.gpu) for k, v in ideal.items()}
