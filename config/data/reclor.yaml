@@ -1,0 +1,3 @@
+dataset_name: "ReClor"
+dataset_path: "data/ReClor/ReClor_val_no_instruction.jsonl"
+task: "mc_qa"

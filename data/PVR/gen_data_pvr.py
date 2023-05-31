@@ -17,13 +17,15 @@ class SampleGeneratorPVR():
                  complexity: int,
                  holdout: int,
                  aggregation_method: str = 'mod_sum',
-                 adversarial: bool = False):
+                 adversarial: bool = False,
+                 is_algo : bool = False):
         self.dataset_size = dataset_size
         self.nb_trials_ex = nb_trials_ex
         self.complexity = complexity
         self.holdout = holdout
         self.aggregation_method = self._compute_aggregation_method(aggregation_method)
         self.adversarial = adversarial
+        self.is_algo = is_algo
 
 
     def _compute_aggregation_method(self, aggregation_method : str):
@@ -98,7 +100,10 @@ class SampleGeneratorPVR():
             new_sample = {
                 "input" : [{
                             "role" : "system", 
-                            "content": "Figure out the pattern in the following examples and apply it to the test case. Your answer must follow the format of the examples."
+                            "content": 
+                                "Your task is to write down the python function responsible for the computation of the output from the list in the following examples. Your answer must follow the format of the examples." 
+                                if self.is_algo else
+                                "Figure out the pattern in the following examples and apply it to the test case. Your answer must follow the format of the examples."
                             }],
                 "ideal" : ""
             }
@@ -115,7 +120,10 @@ class SampleGeneratorPVR():
             test_arr = [pointer_values[i,-1].item()] + sequences[i,-1].tolist()
             new_sample["input"].append({
                             "role" : "system", 
-                            "content": f"{str(test_arr)} -> "
+                            "content": 
+                                f"Write the function. Next, write a line to print the output of this function for the input {str(test_arr)}:\n```python\n"
+                                if self.is_algo else
+                                f"{str(test_arr)} -> "
                             })
             new_sample["ideal"] = labels[i,-1].item()
 
@@ -157,11 +165,12 @@ parser.add_argument('--complexity', type=int, default=0)
 parser.add_argument('--holdout', type=int, default=0)
 parser.add_argument('--aggregation_method', type=str, default='mod_sum')
 parser.add_argument('--adversarial', action='store_true')
+parser.add_argument('--is_algo', action='store_true', help='Whether to generate algorithmic tasks.')
 args = parser.parse_args()
 print("Generating dataset with arguments: ", args)
 
 # create dataset
-generator = SampleGeneratorPVR(args.size, args.nb_trials_ex, args.complexity, args.holdout, args.aggregation_method, args.adversarial)
+generator = SampleGeneratorPVR(args.size, args.nb_trials_ex, args.complexity, args.holdout, args.aggregation_method, args.adversarial, args.is_algo)
 samples = generator()
 print("Generated dataset with size: ", len(samples))
 

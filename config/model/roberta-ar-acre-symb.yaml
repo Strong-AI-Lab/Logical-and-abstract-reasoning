@@ -1,0 +1,8 @@
+
+model_name: "roberta-ar"
+model_weights: "./fine-tuning-saves/fine-tuned-roberta-ACRE-2023-05-14_03-02-57/"
+task: "mc_qa"
+model_config_args:
+  vocab_size: 50265
+model_args:
+  ignore_mismatched_sizes: true

@@ -28,13 +28,27 @@ print(f"Read {len(input_data)} samples.")
 
 
 # Symbolic translation functions
+LIGHT_DICT_SYMB = {"off": 0, "undetermined": 1, "on": 2}
 def get_instructions_symbolic():
-    return {
-                "role": "system",
-                "content": "Figure out the pattern in the following examples and apply it to the test case. Your answer must follow the format of the examples. You can answer 2 if the solution cannot be determined."
-    }
+    return [
+        {
+            "role": "system",
+            "content": f"Figure out the pattern in the following examples and apply it to the test case. Your answer must follow the format of the examples. You can answer {LIGHT_DICT_SYMB['undetermined']} if the solution cannot be determined. Your answer must be one of the following choices:"
+        },
+        {
+            "role": "system",
+            "content": f"{LIGHT_DICT_SYMB['off']}."
+        },
+        {
+            "role": "system",
+            "content": f"{LIGHT_DICT_SYMB['undetermined']}."
+        },
+        {
+            "role": "system",
+            "content": f"{LIGHT_DICT_SYMB['on']}."
+        }
+    ]
 
-LIGHT_DICT_SYMB = {"on": 2, "off": 0}
 def get_example_symbolic(objects, light_state):
     return [
                 {
@@ -46,7 +60,7 @@ def get_example_symbolic(objects, light_state):
 def get_trial_symbolic(objects, label):
     return [
                 {
-                    "role": "system",
+                    "role": "user",
                     "content": f"{str(objects)} -> "
                 }
             ], label
@@ -58,10 +72,24 @@ with open("object_dict.json", "r") as object_dict_file:
     OBJECT_DICT_TEXT = json.load(object_dict_file)
     
 def get_instructions_text():
-    return {
-                "role": "system",
-                "content": "Objects of various color, shape, and texture are displayed. Some objects may contain a device to turn a light on if displayed. From the observations, deduce if the light is on, off, or if the state cannot be determined. Your answer must contain a single word: on, off, or undetermined."
-    }
+    return [
+        {
+            "role": "system",
+            "content": "Objects of various color, shape, and texture are displayed. Some objects may contain a device to turn a light on if displayed. From the observations, deduce if the light is on, off, or if the state cannot be determined. Your answer must contain a single word:"
+        },
+        {
+            "role": "system",
+            "content": "on."
+        },
+        {
+            "role": "system",
+            "content": "off."
+        },
+        {
+            "role": "system",
+            "content": "undetermined."
+        }
+    ]
 
 def get_example_text(objects, light_state):
     object_text = ""
@@ -84,11 +112,12 @@ def get_trial_text(objects, label):
         c = obj_desc["color"]
         s = obj_desc["shape"]
         t = obj_desc["material"]
-        object_text += f"A {c} {s} object in {t} is visible. "
+        object_text += f"A {c} {s} in {t} is visible. "
+    object_text += "The state of the light is "
     
     return [
                 {
-                    "role": "system",
+                    "role": "user",
                     "content": object_text
                 }
             ], LIGHT_DICT_TEXT[label]
@@ -99,10 +128,12 @@ if symbolic:
     get_instructions = get_instructions_symbolic
     get_example = get_example_symbolic
     get_trial = get_trial_symbolic
+    get_answer_list = lambda: list(LIGHT_DICT_SYMB.values())
 else:
     get_instructions = get_instructions_text
     get_example = get_example_text
     get_trial = get_trial_text
+    get_answer_list = lambda: LIGHT_DICT_TEXT
 
 
 
@@ -110,7 +141,7 @@ else:
 output_data = []
 for sample in input_data:
     new_samples = []
-    input_sample = [get_instructions()]
+    input_sample = get_instructions()
     for trial in sample:
         if trial["light_state"] != "no": # example
             input_sample += get_example(trial["objects"], trial["light_state"])
@@ -120,6 +151,7 @@ for sample in input_data:
             
             new_samples.append({
                 "input": input_test + trial_input,
+                "choice_strings": get_answer_list(),
                 "ideal": trial_ideal
             })
     output_data += new_samples

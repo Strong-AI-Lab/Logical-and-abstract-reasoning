@@ -1,0 +1,7 @@
+
+model_name: "alpaca"
+model_weights: "/data/shared/alpaca/7B"
+task: "algo"
+max_new_tokens: 256
+model_config_args:
+  vocab_size: 32001

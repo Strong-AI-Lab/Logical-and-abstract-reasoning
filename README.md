@@ -4,20 +4,53 @@ Repository for the evaluation of Large Language Models on logical and abstract r
 
 ## Installation
 
+To install the repository, use the following command:
+
 ```
-conda create -n logiarc python=3.8
-conda activate logiarc
 git clone https://github.com/Strong-AI-Lab/Logical-and-abstract-reasoning.git
+```
+
+To install the dependencies in a virtual environment, use the following:
+```
 cd Logical-and-abstract-reasoning
+python -m venv env/
+source env/bin/activate
 pip install -r requirements.txt
 ```
 
-You also need to install apex, you can following the steps if you are using the Linux system.
+You may need to install [transformers](https://huggingface.co/docs/transformers/index) from the repository:
 ```
-git clone https://github.com/NVIDIA/apex
-cd apex
-pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+pip install git+https://github.com/huggingface/transformers
 ```
+
+
+## Use
+
+### Evaluation
+
+To evaluate a model in the repository, use the following command:
+```
+python run_evaluation config/model/<model_config.yaml> config/data/<data_config.yaml> --<kwarg_name> <kwarg>
+```
+
+You can choose the model to evaluate by changing the `<model_config.yaml>` file, and the dataset to evaluate the model on by changing the `<data_config.yaml>` file. You can add any additional arguments as `<kwargs>` (e.g. private API key for GPT models). 
+
+By default, all the results are saved in a csv file in the `logs/` folder. You can re-compute the metrics from the evaluation run from this file by running the following:
+```
+python src/evaluate/evaluator.py logs/<results_file.csv>
+```
+
+### Fine-tuning
+
+To fine-tune a model on a given dataset, run the following:
+```
+python run_finetuning.py config/model/<model_config.yaml> config/data/<data_config.yaml> config/trainer/<trainer_config.yaml>
+```
+The configuration files work similarly as for evaluation. The `<model_config.yaml>` file contains additoinal configuration for training. The logs are saved in `fine-tuning-output/` and the model weights are saved in `fine-tuning-saves/`.
+
+Currently, only HuggingFace models can be fine-tuned.
+
+
 ## Models
 <table>
   <tr>

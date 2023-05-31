@@ -1,0 +1,8 @@
+
+model_name: "roberta"
+model_weights: "roberta-large"
+task: "mc_qa"
+model_config_args:
+  vocab_size: 50265
+model_args:
+  ignore_mismatched_sizes: true

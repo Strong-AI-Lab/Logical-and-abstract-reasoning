@@ -1,0 +1,4 @@
+
+dataset_name: "ARC"
+dataset_path: "data/ARC/symbolic_hard/train.jsonl"
+task: "open_qa"

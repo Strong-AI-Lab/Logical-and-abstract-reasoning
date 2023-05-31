@@ -1,0 +1,4 @@
+
+model_name: "text-davinci-003"
+task: "algo"
+max_tokens: 256

@@ -1,0 +1,4 @@
+
+dataset_name: "PVR"
+dataset_path: "data/PVR/symbolic_algo/IID/train_complexity0_4ex.jsonl"
+task: "open_qa"

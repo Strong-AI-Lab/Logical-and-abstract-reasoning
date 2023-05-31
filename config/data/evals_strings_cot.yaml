@@ -1,0 +1,4 @@
+
+dataset_name: "STRINGS"
+dataset_path: "data/Evals/Strings/samples_cot.jsonl"
+task: "open_qa"

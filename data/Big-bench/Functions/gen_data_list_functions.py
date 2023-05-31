@@ -9,6 +9,7 @@ import tqdm
 parser = argparse.ArgumentParser(description='Download and convert BIG-bench List Functions data split to jsonl inputs compatible with models.')
 parser.add_argument('output_path')
 parser.add_argument('--nb_examples', type=int, default=3, help='Number of examples to generate for each task.')
+parser.add_argument('--is_algo', action='store_true', help='Whether to generate algorithmic tasks.')
 args = parser.parse_args()
 
 
@@ -28,6 +29,7 @@ MIN_TASK = 1
 MAX_TASK = 250
 tasks_ids = list(range(MIN_TASK, MAX_TASK + 1))
 nb_examples = args.nb_examples
+is_algo = args.is_algo
 
 samples = []
 for i in tqdm.tqdm(tasks_ids):
@@ -40,17 +42,23 @@ for i in tqdm.tqdm(tasks_ids):
     sample_input = []
     sample_input.append({
         "role": "system",
-        "content": f"{data['task_prefix']}"
+        "content": 
+            "Your task is to write down the python function responsible for the transformation of the list in the following examples. The format is [input] -> [output]:" 
+            if is_algo else
+            "Apply a function to the final input list to generate the output list. Use any preceding inputs and outputs as examples to find what is the function used. All example outputs have been generated using the same function."
     })
     for i in range(nb_examples):
         sample_input.append({
-            "role": "system",
+            "role": "user",
             "content": f"{str(data['examples'][i]['input'])} -> {str(data['examples'][i]['target'])}"
         })
 
     sample_input.append({
-        "role": "system",
-        "content": f"{str(data['examples'][nb_examples]['input'])} -> "
+        "role": "user",
+        "content": 
+            f"Write the function. Next, write a line to print the output of this function for the input {str(data['examples'][nb_examples]['input'])}:\n```python\n"
+            if is_algo else
+            f"{str(data['examples'][nb_examples]['input'])} -> "
     })
     samples.append({
         "input": sample_input,
