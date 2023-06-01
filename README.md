@@ -135,7 +135,7 @@ Currently, only HuggingFace models can be fine-tuned.
   </tr >
   
   <tr>
-      <th rowspan="3" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
+      <th rowspan="4" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
       <td align="center">ReClor</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
@@ -155,6 +155,13 @@ Currently, only HuggingFace models can be fine-tuned.
       <td align="center">Reading Comprehension</td>
       <td align="center"> <a href="https://github.com/openai/evals/pull/470">project</a>  </td>
       <td align="center">Logical reasoning reading comprehension</td>
+  </tr>
+  <tr>
+      <td align="center">LogiQA Logical Reasoning Plus</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://github.com/openai/evals/pull/648">project</a>  </td>
+      <td align="center">Logical reasoning reading comprehension for out-of-distribution evaluation</td>
   </tr>
   
   <tr>
