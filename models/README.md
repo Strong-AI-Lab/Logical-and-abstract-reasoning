@@ -13,6 +13,7 @@ You can run the following command to conduct the experiment on Alpaca to do the 
 python run_alpaca_prompt.py
 ```
 
+## Convert model to support transformers
 Currently `alpaca-7B` are trained and located at `/data/qbao775/Explanation-Generation/qiming_alpaca_7B` under `hgx2.sail.cloud.nesi.nz` server. If you want to use Alpaca do conduct experiment, you may need to use `hgx2.sail.cloud.nesi.nz` server to do the experiment. `LLaMA` is located in `/data/LLaMA` under both `hgx1.sail.cloud.nesi.nz` and `hgx2.sail.cloud.nesi.nz` server. But if you want to load the `LLaMA` to do fine-tuning and testing, you need to convert the model into the format into huggingface version as the following shown.
 
 ```
@@ -23,6 +24,7 @@ python transformers/src/transformers/models/llama/convert_llama_weights_to_hf.py
     --output_dir llama_7B_hf
 ```
 
+## LLaMA-based model instruction fine-tunning
 If you want to fine-tune LLaMA, please follow the following script. Here is an example to replicate Alpaca using LLaMA. We refer the code from [here](https://github.com/tatsu-lab/stanford_alpaca). You need to git clone the [stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca.git) firstly as the following. The dataset `alpaca_data.json` is also been provided under the [stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca.git) project.
 
 ```
