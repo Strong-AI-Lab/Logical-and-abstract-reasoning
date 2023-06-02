@@ -51,7 +51,7 @@ The configuration files work similarly as for evaluation. The `<model_config.yam
 Currently, only HuggingFace models can be fine-tuned.
 
 #### LLaMA-based model instruction fine-tuning
-We consider the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca) training script. If you want to conduct a LLaMA-based model on instruction fine-tuning, you can do that by following [this link](https://github.com/Strong-AI-Lab/Logical-and-abstract-reasoning/blob/main/models/README.md#llama-based-model-instruction-fine-tunning). 
+We use the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca) training script. If you want to conduct a LLaMA-based model on instruction fine-tuning, you can do that by following [this link](https://github.com/Strong-AI-Lab/Logical-and-abstract-reasoning/blob/main/models/README.md#llama-based-model-instruction-fine-tunning). 
 
 ## Models
 <table>
