@@ -248,5 +248,6 @@ We use the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://gith
   </tr>
 </table>
 
-
+## Acknowledgement
+Our proposed new dataset [logiqa-logical-reasoning-plus](https://github.com/openai/evals/pull/648) has been merged by [OpenAI/Evals](https://github.com/openai/evals).
 
