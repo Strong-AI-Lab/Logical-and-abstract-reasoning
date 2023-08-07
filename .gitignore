@@ -6,3 +6,4 @@ wandb/
 logs/
 fine-tuning-output/
 fine-tuning-saves/
+nohup.out

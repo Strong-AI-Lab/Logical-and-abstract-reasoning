@@ -3,5 +3,11 @@ model_name: "llama"
 model_weights: "/data/shared/llama/7B/"
 task: "open_qa"
 max_new_tokens: 128
-model_config_args:
-  fsdp_transformer_layer_cls_to_wrap: "LLaMADecoderLayer"
+# model_config_args:
+#   fsdp_transformer_layer_cls_to_wrap: "LLaMADecoderLayer"
+# load_config: false
+# model_config_args:
+#   vocab_size: 32001
+model_args:
+  # load_in_8bit: True
+  device_map: "auto"
