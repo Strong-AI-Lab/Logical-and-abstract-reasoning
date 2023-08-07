@@ -73,7 +73,7 @@ class GPTModel(Model):
 
 class GPTModelCompletion(GPTModel):
     def __init__(self, model_name, api_key, model_type=None, temperature=0.5, max_tokens=4097, **kwargs):
-        super().__init__(model_name, api_key, model_type, temperature, max_tokens, **kwargs)
+        super().__init__(model_name, api_key, model_type, float(temperature), int(max_tokens), **kwargs)
         self.model_type = "completion"
 
     def answer_query(self, prompt):
@@ -81,7 +81,7 @@ class GPTModelCompletion(GPTModel):
     
 class GPTModelChat(GPTModel):
     def __init__(self, model_name, api_key, model_type=None, temperature=0.5, max_tokens=4097, **kwargs):
-        super().__init__(model_name, api_key, model_type, temperature, max_tokens, **kwargs)
+        super().__init__(model_name, api_key, model_type, float(temperature), int(max_tokens), **kwargs)
         self.model_type = "chat"
 
     def answer_query(self, prompt):
