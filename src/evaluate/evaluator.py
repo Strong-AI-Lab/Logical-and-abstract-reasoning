@@ -173,7 +173,7 @@ class Evaluator():
         answer = str(answer)
         target = str(target)
 
-        answer_search = re.findall(r"(?:ANSWER:\s*(?:[\s\w\[\]\(\),']+(?:is |should be |:))?)"+f"({self.answer_type})", answer)
+        answer_search = re.findall(r"(?:ANSWER:\s*'?(?:[\s\w\[\]\(\),']+(?:is |be |:))?)"+f"({self.answer_type})", answer)
         if len(answer_search) > 1:
             print(f"Warning: answer has more than one line: {answer}.")
             # answer = None
@@ -190,8 +190,55 @@ class Evaluator():
             is_tensor = re.search(r"tensor\((\w+)\)", target)
             if is_tensor:
                 target = is_tensor.group(1)
-        print(answer, target, answer==target)
+        
         return answer == target
+
+    def _evaluate_multiple_keywords(self, answer, target):
+        answer = str(answer)
+        target = str(target)
+
+        answer = re.findall(r'-?\b\w+\b', answer)
+        target = re.findall(r'-?\b\w+\b', target)
+        if len(answer) > 1:
+            answer = [ans for ans, tag in nltk.pos_tag(answer) if tag in ["CD", "NN", "NNS", "NNP", "NNPS", "JJ", "JJR", "JJS", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ", "RB", "RBR", "RBS"]]
+            target = [ans for ans, tag in nltk.pos_tag(target) if tag in ["CD", "NN", "NNS", "NNP", "NNPS", "JJ", "JJR", "JJS", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ", "RB", "RBR", "RBS"]]
+
+            if len(answer) == 0:
+                print(f"Warning: answer is empty: {answer}")
+                answer = None
+            elif len(target) == 0:
+                print(f"Warning: target is empty: {target}")
+                answer = None
+            elif len(answer) != len(set(answer)):
+                print(f"Warning: answer has duplicates: {[ans for ans in answer if answer.count(ans) > 1]}")
+                answer = None
+            
+            if answer is not None:
+                target = set(target)
+                answer = set(answer) & target
+                
+        elif len(answer) == 1:
+            answer = answer[0]
+        else:
+            print(f"Warning: answer is empty: {answer}")
+            answer = None
+        
+        return answer == target
+    
+    def _evaluate_multiple_keywords_cot(self, answer, target):
+        answer = str(answer)
+        answer_search = re.findall(r"(?:ANSWER:)\s*(.*)", answer)
+        if len(answer_search) > 1:
+            print(f"Warning: answer has more than one line: {answer}.")
+            answer = None
+        elif len(answer_search) == 1:
+            return self._evaluate_multiple_keywords(answer_search[0], target)
+        else:
+            print(f"Warning: answer is empty: {answer}. Aborting.")
+            answer = None
+        
+        return False
+
 
 
 
@@ -206,6 +253,8 @@ class Evaluator():
                         multiple_choices=False, 
                         arrow=False,
                         cot=False,
+                        keywords=False,
+                        keywords_cot=False,
                         select_ans="first",
                         answer_type="all"):
         nltk.download('averaged_perceptron_tagger')
@@ -222,6 +271,8 @@ class Evaluator():
         self.multiple_choices = multiple_choices
         self.arrow = arrow
         self.cot = cot
+        self.keywords = keywords
+        self.keywords_cot = keywords_cot        
 
         assert answer_type in ["num", "char", "list", "all"], f"answer_type must be one of [num, char, list, all]."
         if answer_type == "num":
@@ -250,6 +301,10 @@ class Evaluator():
             self.evaluation_operator = self._evaluate_strict
         elif self.cot:
             self.evaluation_operator = self._evaluate_cot
+        elif self.keywords:
+            self.evaluation_operator = self._evaluate_multiple_keywords
+        elif self.keywords_cot:
+            self.evaluation_operator = self._evaluate_multiple_keywords_cot
         else:
             self.evaluation_operator = self._evaluate_flex
 
@@ -283,6 +338,8 @@ if __name__ == "__main__":
     group_parser.add_argument('--multiple_choices', action="store_true", help="Whether to use multiple choice evaluation or not")
     group_parser.add_argument('--arrow', action="store_true", help="Whether to use arrow evaluation or not")
     group_parser.add_argument('--cot', action="store_true", help="Whether to use chain-of-thought evaluation or not")
+    group_parser.add_argument('--keywords', action="store_true", help="Whether to use multiple keywords evaluation or not")
+    group_parser.add_argument('--keywords_cot', action="store_true", help="Whether to use multiple keywords evaluation with chain-of-thought or not")
     parser.add_argument('--re_run', action="store_true", help="Whether to force recomputation of answer in algo mode")
     parser.add_argument('--select_ans', type=str, default="first", help="If multiple answers, which one to select: [first, last, none].")
     parser.add_argument('--test_compiled', action="store_true", help="Whether to test the compiled version of the code or not")
@@ -301,6 +358,8 @@ if __name__ == "__main__":
                         multiple_choices=args.multiple_choices, 
                         arrow=args.arrow,
                         cot=args.cot,
+                        keywords=args.keywords,
+                        keywords_cot=args.keywords_cot,
                         select_ans=args.select_ans,
                         answer_type=args.answer_type)
     results = evaluator.get_results()
