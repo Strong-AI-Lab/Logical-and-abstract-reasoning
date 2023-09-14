@@ -48,11 +48,11 @@ MODEL_CLASSES = {
 
 class HFModel(Model):
 
-    def __init__(self, model_name, model_weights, model_args : dict = {}, model_config_args : dict = {}, gpu : str = None, load_config : bool = True, max_new_tokens=30, **kwargs):
+    def __init__(self, model_name, model_weights, model_args : dict = None, model_config_args : dict = None, gpu : str = None, load_config : bool = True, max_new_tokens=30, **kwargs):
         self.model_name = model_name
         self.model_weights = model_weights
-        self.model_args = model_args
-        self.model_config_args = model_config_args
+        self.model_args = model_args if model_args is not None else {}
+        self.model_config_args = model_config_args if model_config_args is not None else {}
         self.gpu = gpu
         self.max_new_tokens = max_new_tokens
         self.load_config = load_config
@@ -80,10 +80,10 @@ class HFModel(Model):
         
         self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights)
-        self.tokenizer.pad_token_id = self.tokenizer.vocab_size - 1
+        # self.tokenizer.pad_token_id = self.tokenizer.vocab_size - 1
         # self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        # self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-        # self.tokenizer.padding_side = 'left'
+        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        self.tokenizer.padding_side = 'left'
         self.model.resize_token_embeddings(len(self.tokenizer))
 
         if self.gpu is not None:

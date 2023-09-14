@@ -7,6 +7,7 @@ import datetime
 import torch
 from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
 import evaluate
+from peft import get_peft_config, get_peft_model, prepare_model_for_int8_training
 
 from src.models.loader import loadModel
 from src.models.hf import HFModel
@@ -89,6 +90,14 @@ def main():
     model = loadModel(**{**model_config, **kwargs})
     if not isinstance(model, HFModel):
         raise ValueError("Only HFModel supported for finetuning.")
+    
+    # Convert to PEFT for LoRA
+    if "peft" in trainer_config:
+        print(f"Fine-tuning using PEFT: peft_type={trainer_config['peft']['peft_type']}, task_type={trainer_config['peft']['task_type']}")
+        peft_config = get_peft_config(trainer_config["peft"])
+        model.model = prepare_model_for_int8_training(model.model) # Add this for using int8
+        model.model = get_peft_model(model.model, peft_config)
+
 
     # Load evaluation dataset
     data = loadDataset(**{**data_config, **kwargs})
