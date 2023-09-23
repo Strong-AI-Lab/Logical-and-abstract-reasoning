@@ -17,7 +17,7 @@ class InformationGainMeasure():
         self.examples = InformationGainMeasure._extract_examples(example_file)
         self.corrupted_examples = InformationGainMeasure._corrupt_examples(self.examples)
         self.algo_name_reg = r"def\s+([\w\d\_]+)\(.*?\)\:"
-        self.algo_reg = r"(def\s+[\w\d\_]+\(.*?\)\:\n.*?)\n\nprint"
+        self.algo_reg = r"(def\s+[\w\d\_]+\(.*?\)\:\n.*?)\nprint"
     
     def _extract_examples(example_file):
         examples = []
@@ -79,13 +79,14 @@ class InformationGainMeasure():
 
         information_gain = math.nan
         try:
-            exec(algo_str) # /!\ execution of arbitrary code. only run if trusted
-            algo = locals()[algo_name]
+            glob_vars={}
+            exec(algo_str,glob_vars) # /!\ execution of arbitrary code. only run if trusted
+            algo = glob_vars[algo_name]
 
             accuracy = InformationGainMeasure._classify_examples(algo, self.examples[index], self.corrupted_examples[index])
             entropy = InformationGainMeasure._compute_entropy(accuracy)
             information_gain = 1 - entropy # Information Gain = H("example follows true algo") - H("example follows true algo"|"example follows genereated algo") = H(1/2) - H(accuracy)
-        except (ValueError,IndexError,AttributeError) as e:
+        except (ValueError,IndexError,AttributeError,UnboundLocalError,ZeroDivisionError) as e:
             if self.verbose:
                 print(f"Error while evaluating {algo_name} on example {index}: {e}")
 
@@ -99,14 +100,15 @@ class InformationGainMeasure():
 
         biased_information_gain = math.nan
         try:
-            exec(algo_str) # /!\ execution of arbitrary code. only run if trusted
-            algo = locals()[algo_name]
+            glob_vars={}
+            exec(algo_str,glob_vars) # /!\ execution of arbitrary code. only run if trusted
+            algo = glob_vars[algo_name]
 
             if InformationGainMeasure._classify_examples(algo, self.examples[index][:self.training_context], []) == 1.0:
                 biased_accuracy = InformationGainMeasure._classify_examples(algo, self.examples[index][self.training_context:], self.corrupted_examples[index][self.training_context:])
                 biased_entropy = InformationGainMeasure._compute_entropy(biased_accuracy)
                 biased_information_gain = 1 - biased_entropy
-        except (ValueError,IndexError,AttributeError) as e:
+        except (ValueError,IndexError,AttributeError,UnboundLocalError,ZeroDivisionError) as e:
             if self.verbose:
                 print(f"Error while evaluating {algo_name} on example {index}: {e}")
 
