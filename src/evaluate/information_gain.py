@@ -99,11 +99,11 @@ class InformationGainMeasure():
 
 
     def apply(self, answer, index):
-        algo_name = re.search(self.algo_name_reg, answer).group(1)
-        algo_str = re.search(self.algo_reg, answer, re.DOTALL).group(1)
-
         information_gain = math.nan
         try:
+            algo_name = re.search(self.algo_name_reg, answer).group(1)
+            algo_str = re.search(self.algo_reg, answer, re.DOTALL).group(1)
+
             glob_vars={}
             exec(algo_str,glob_vars) # /!\ execution of arbitrary code. only run if trusted
             algo = glob_vars[algo_name]
@@ -111,7 +111,7 @@ class InformationGainMeasure():
             accuracy = InformationGainMeasure._classify_examples(algo, self.examples[index], self.corrupted_examples[index])
             entropy = InformationGainMeasure._compute_entropy(accuracy)
             information_gain = 1 - entropy # Information Gain = H("example follows true algo") - H("example follows true algo"|"example follows genereated algo") = H(1/2) - H(accuracy)
-        except (ValueError,IndexError,AttributeError,UnboundLocalError,ZeroDivisionError) as e:
+        except (ValueError,IndexError,AttributeError,UnboundLocalError,ZeroDivisionError,SyntaxError,AttributeError) as e:
             if self.verbose:
                 print(f"Error while evaluating {algo_name} on example {index}: {e}")
 
@@ -120,11 +120,11 @@ class InformationGainMeasure():
     def apply_biased(self, answer, index, weight=1.0):
         assert self.training_context is not None, "Training context must be specified to use this method."
 
-        algo_name = re.search(self.algo_name_reg, answer).group(1)
-        algo_str = re.search(self.algo_reg, answer, re.DOTALL).group(1)
-
         biased_information_gain = math.nan
         try:
+            algo_name = re.search(self.algo_name_reg, answer).group(1)
+            algo_str = re.search(self.algo_reg, answer, re.DOTALL).group(1)
+
             glob_vars={}
             exec(algo_str,glob_vars) # /!\ execution of arbitrary code. only run if trusted
             algo = glob_vars[algo_name]
@@ -133,7 +133,7 @@ class InformationGainMeasure():
                 biased_accuracy = InformationGainMeasure._classify_examples(algo, self.examples[index][self.training_context:], self.corrupted_examples[index][self.training_context:])
                 biased_entropy = InformationGainMeasure._compute_entropy(biased_accuracy)
                 biased_information_gain = 1 - biased_entropy
-        except (ValueError,IndexError,AttributeError,UnboundLocalError,ZeroDivisionError) as e:
+        except (ValueError,IndexError,AttributeError,UnboundLocalError,ZeroDivisionError,SyntaxError,AttributeError) as e:
             if self.verbose:
                 print(f"Error while evaluating {algo_name} on example {index}: {e}")
 
