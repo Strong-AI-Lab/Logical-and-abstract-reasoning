@@ -69,6 +69,7 @@ def main():
 
     # Load model
     model = loadModel(**{**model_config, **kwargs})
+    model.model.eval()
 
     # Load evaluation dataset
     data = loadDataset(**{**data_config, **kwargs})
@@ -98,7 +99,15 @@ def main():
     loggers.end_logging()
 
     # Extract metrics
-    evaluator = Evaluator(csv_logger.save_path, pos_tagging=(True if ("pos_tagging" in kwargs or "pos_tagging" in data_config) else False), code=(True if model_config["task"] == "algo" else False))
+    evaluator_arg_names = ["strict", "num", "lt", "pos_tagging", "code", "test_compiled", "force_code_run", "multiple_choices", "arrow", "cot", "keywords", "keywords_cot", "select_ans", "answer_type"]
+    evaluator_kwargs = {}
+    for arg_name in evaluator_arg_names:
+        if arg_name in kwargs:
+            evaluator_kwargs[arg_name] = kwargs[arg_name]
+        elif arg_name in data_config:
+            evaluator_kwargs[arg_name] = data_config[arg_name]
+            
+    evaluator = Evaluator(csv_logger.save_path, **evaluator_kwargs)
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()

@@ -6,11 +6,8 @@ training_arguments:
   output_dir: "fine-tuning-output"
   per_device_train_batch_size: 64
   per_device_eval_batch_size: 64
-  num_train_epochs: 1
+  num_train_epochs: 3
   learning_rate: 0.0005
-# self_supervise: false
-# initial_task_ratio: 0.2
-# nb_augmented: 5
 peft:
   peft_type: "LORA"
   task_type: "CAUSAL_LM"

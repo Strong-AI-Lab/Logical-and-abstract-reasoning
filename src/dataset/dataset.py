@@ -61,47 +61,22 @@ class HFDataset(IterableDataset):
 
 
 class FineTuningDatasetWrapper():
-    def __init__(self, dataset : IterableDataset, tokenize : Callable, max_length : int = 512, self_supervise : bool = False, initial_task_ratio : float = 0.0, nb_augmented : int = 10, **kwargs):
+    def __init__(self, dataset : IterableDataset, tokenize : Callable, max_length : int = 512, **kwargs):
         self.dataset = dataset
         self.tokenize = tokenize
         self.max_length = int(max_length)
-        self.self_supervise = bool(self_supervise)
-        self.initial_task_ratio = float(initial_task_ratio)
-        self.nb_augmented = int(nb_augmented)
-
-    def _create_more_samples(self, sample, separator = "\n"):
-        input = sample["input"]
-        ideal = sample["ideal"]
-
-        assert isinstance(ideal, str), f"Self-supervised dataset must have a single string ideal. Got: {type(ideal)}. Perhaps you are loading using a batched dataset?"
-
-        string_text = separator.join([inp["content"] for inp in input]) + ideal
-        samples = [sample] * int(self.initial_task_ratio * len(string_text.split(" ")))
-
-        for i in range(len(string_text.split(" "))-1):
-            new_input_str = " ".join(string_text.split(" ")[:i+1])
-            new_input = [{"role": "system", "content": i_str} for i_str in new_input_str.split(separator)]
-            new_ideal = " ".join(string_text.split(" ")[i+1:])
-
-            samples.append({"input": new_input, "ideal": new_ideal})
-        
-        samples = random.sample(samples, min(len(samples), self.nb_augmented))
-        return samples
 
     def _gen(self):
         for sample in self.dataset:
-            values = self._create_more_samples(sample) if self.self_supervise else [sample]
+            input, label = self.tokenize(sample, format_labels=True, padding="max_length", max_length=self.max_length)
+            if isinstance(label, dict) or isinstance(label, transformers.tokenization_utils_base.BatchEncoding):
+                label = label["input_ids"][0]
+            else:
+                label = label[0]
+            if input["input_ids"][0].size(-1) > self.max_length:
+                print(f"Warning: input too long: {input['input_ids'][0].size(-1)} > {self.max_length}.")
 
-            for value in values: 
-                input, label = self.tokenize(value, format_labels=True, padding="max_length", max_length=self.max_length)
-                if isinstance(label, dict) or isinstance(label, transformers.tokenization_utils_base.BatchEncoding):
-                    label = label["input_ids"][0]
-                else:
-                    label = label[0]
-                if input["input_ids"][0].size(-1) > self.max_length:
-                    print(f"Warning: input too long: {input['input_ids'][0].size(-1)} > {self.max_length}.")
-
-                yield {"input_ids": input["input_ids"][0], "attention_mask": input["attention_mask"][0], "labels": label}
+            yield {"input_ids": input["input_ids"][0], "attention_mask": input["attention_mask"][0], "labels": label}
 
     def get(self):
         return datasets.Dataset.from_generator(self._gen)
