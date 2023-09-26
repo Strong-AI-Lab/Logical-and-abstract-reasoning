@@ -66,6 +66,9 @@ def parse_input_text(s):
     # s = re.findall(r"\{(.*?)\}", s)[-1]
     s = re.sub(r"\{(.*?)\}, ", "", s, count=4)
     s = re.sub(r" object", "", s)
+    s = re.sub(r"The light is A", "A", s) # needed to correct bug in old logs
+    s = re.sub(r"What is the state of the light\?A", "A", s) # needed to correct bug in old logs
+    s = re.sub(r"What is the state of the light\?'", r"The state of the light is '", s) # needed to updated format of old logs
     s = re.sub(r"The light is '", r"The state of the light is '", s)
     # s = "[{" + s + "}]"
     return s
@@ -117,12 +120,13 @@ if __name__ == "__main__":
         
     # Collect results
     evaluator = Evaluator(result_file,
-                        # arrow=True,
+                        arrow=True,
                         # num=True,
-                        cot=True,
+                        # cot=True,
                         # keywords_cot=True,
-                        # select_ans="last",
-                        answer_type="num",
+                        select_ans="first",
+                        # pos_tagging=True,
+                        # answer_type="num",
                         )
     
     rows = evaluator.get_results().values.tolist()
@@ -148,6 +152,8 @@ if __name__ == "__main__":
                 reason += "Input not found in keys. "
             if str_row_label not in [key[1] for key in match_keys.keys()]:
                 reason += "Label not found in keys. "
+            if str_row_label not in [key_1 for key_0, key_1 in match_keys.keys() if key_0 == str_row_input]:
+                reason += f"Label not found for this input. Options: ({', '.join([key_1 for key_0, key_1 in match_keys.keys() if key_0 == str_row_input])}). "
             if reason == "":
                 reason = "Unknown."
             raise KeyError(f"No match found for this input and label: ({str_row_input}, {str_row_label}). {reason}")
