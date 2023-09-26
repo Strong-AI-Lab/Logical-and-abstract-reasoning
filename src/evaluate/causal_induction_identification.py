@@ -26,8 +26,8 @@ def get_trial_symbolic(objects, label):
                     "content": f"{str(objects)} -> "
                 }
             ], label
-def parse_input_symbolic(s):
-    s = re.sub(r"\{(.*?)\}, ", "", s, count=1)
+def parse_input_symbolic(s, nb_remove=4):
+    s = re.sub(r"\{(.*?)\}, ", "", s, count=nb_remove)
     return s
 def parse_label_symbolic(s):
     return re.sub(r"tensor\((.*?)\)", r"\1", s)
@@ -62,9 +62,9 @@ def get_trial_text(objects, label):
                     "content": object_text
                 }
             ], LIGHT_DICT_TEXT[label]
-def parse_input_text(s):
+def parse_input_text(s, nb_remove=4):
     # s = re.findall(r"\{(.*?)\}", s)[-1]
-    s = re.sub(r"\{(.*?)\}, ", "", s, count=4)
+    s = re.sub(r"\{(.*?)\}, ", "", s, count=nb_remove)
     s = re.sub(r" object", "", s)
     s = re.sub(r"The light is A", "A", s) # needed to correct bug in old logs
     s = re.sub(r"What is the state of the light\?A", "A", s) # needed to correct bug in old logs
@@ -83,6 +83,7 @@ if __name__ == "__main__":
     parser.add_argument('result_file', type=str, help='Path to the file containing the results to identify.')
     parser.add_argument('truth_file', type=str, help='Path to the file containing the causal induction ground truth.')
     parser.add_argument('--symbolic', action='store_true', help='Whether to use symbolic format.')
+    parser.add_argument('--cot', action='store_true', help='Whether to use COT format.')
 
     args = parser.parse_args()
 
@@ -90,16 +91,21 @@ if __name__ == "__main__":
     truth_file = args.truth_file
     symbolic = args.symbolic
 
+    if args.cot:
+        nb_input_remove = 1
+    else:
+        nb_input_remove = 4
+
     # Select translation functions
     if symbolic:
         get_example = get_example_symbolic
         get_trial = get_trial_symbolic
-        parse_input = parse_input_symbolic
+        parse_input = lambda s : parse_input_symbolic(s,nb_input_remove)
         parse_label = parse_label_symbolic
     else:
         get_example = get_example_text
         get_trial = get_trial_text
-        parse_input = parse_input_text
+        parse_input = lambda s : parse_input_text(s,nb_input_remove)
         parse_label = parse_label_text
 
     # Read raw data
