@@ -1,0 +1,4 @@
+
+dataset_name: "RAVEN"
+dataset_path: "data/RAVEN/symbolic/distribute_nine.jsonl"
+task: "mc_qa"
