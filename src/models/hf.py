@@ -27,6 +27,7 @@ from transformers import (
     DebertaV2Config,
     DebertaV2ForMultipleChoice,
     DebertaV2Tokenizer,
+    AutoTokenizer,
 )
 
 from peft import PeftModel, PeftModelForCausalLM, PeftConfig
@@ -34,6 +35,7 @@ from peft import PeftModel, PeftModelForCausalLM, PeftConfig
 MODEL_CLASSES = {
     "gpt-2": (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
     "llama": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
+    "llama2": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "alpaca": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "vicuna": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
     "alpaca-lora": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
@@ -44,6 +46,7 @@ MODEL_CLASSES = {
     "roberta-ar": (None, RobertaForMultipleChoice, RobertaTokenizer),
     "albert": (AlbertConfig, AlbertForMultipleChoice, AlbertTokenizer),
     "debertav2": (DebertaV2Config, DebertaV2ForMultipleChoice, DebertaV2Tokenizer),
+    "zephyr": (None, AutoModelForCausalLM, AutoTokenizer),
     "peft": (PeftConfig, PeftModel, None),
 }
 
@@ -85,10 +88,7 @@ class HFModel(Model):
         
         self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights, **self.tokenizer_args)
-        # self.tokenizer.pad_token_id = self.tokenizer.vocab_size - 1
-        self.tokenizer.pad_token_id = 0
-        # self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-        # self.model.resize_token_embeddings(len(self.tokenizer))
+        self.tokenizer.pad_token = self.tokenizer.eos_token
         self.tokenizer.padding_side = 'left'
 
         if self.adapter_name is not None and self.adapter_weights is not None: # PEFT model for LoRA

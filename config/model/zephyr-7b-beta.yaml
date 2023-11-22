@@ -1,0 +1,9 @@
+
+model_name: "zephyr"
+model_weights: ""HuggingFaceH4/zephyr-7b-beta"
+task: "open_qa"
+max_new_tokens: 50
+model_args:
+  device_map: "auto"
+tokenizer_args:
+  add_eos_token: true
