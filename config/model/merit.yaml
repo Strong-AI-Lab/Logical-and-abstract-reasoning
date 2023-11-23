@@ -2,3 +2,5 @@
 model_name: "debertav2"
 model_weights: "/data/shared/merit-deberta-v2-xxlarge-our-model-v5-bs-16-lr-3e-6-contraposition/"
 task: "mc_qa"
+tokenizer_args:
+  padding_side: 'right'

@@ -5,3 +5,6 @@ task: "algo"
 max_new_tokens: 128
 model_config_args:
   fsdp_transformer_layer_cls_to_wrap: "LLaMADecoderLayer"
+tokenizer_args:
+  add_eos_token: true
+  padding_side: 'left'

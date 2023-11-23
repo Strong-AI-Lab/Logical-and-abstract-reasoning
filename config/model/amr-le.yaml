@@ -1,3 +1,5 @@
 model_name: "debertav2"
 model_weights: "/data/qbao775/Logical-Equivalence-driven-AMR-Data-Augmentation-for-Representation-Learning/BERT/Checkpoints/reclor/debertav2-xxlarge-contraposition"
 task: "mc_qa"
+tokenizer_args:
+  padding_side: 'right'

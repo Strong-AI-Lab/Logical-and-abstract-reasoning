@@ -1,8 +1,0 @@
-
-model_name: "debertav2"
-model_weights: "./fine-tuning-saves/fine-tuned-debertav2-ACRE-2023-05-16_03-59-47/"
-task: "mc_qa"
-model_config_args:
-  vocab_size: 128101
-model_args:
-  ignore_mismatched_sizes: true

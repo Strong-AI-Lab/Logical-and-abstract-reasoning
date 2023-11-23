@@ -6,3 +6,5 @@ model_config_args:
   vocab_size: 50265
 model_args:
   ignore_mismatched_sizes: true
+tokenizer_args:
+  padding_side: 'right'

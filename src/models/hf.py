@@ -34,11 +34,11 @@ from peft import PeftModel, PeftModelForCausalLM, PeftConfig
 
 MODEL_CLASSES = {
     "gpt-2": (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
-    "llama": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
-    "llama2": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
-    "alpaca": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
-    "vicuna": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
-    "alpaca-lora": (LlamaConfig, LlamaForCausalLM, LlamaTokenizer),
+    "llama": (None, AutoModelForCausalLM, AutoTokenizer),
+    "llama2": (None, AutoModelForCausalLM, AutoTokenizer),
+    "alpaca": (None, AutoModelForCausalLM, AutoTokenizer),
+    "vicuna": (None, AutoModelForCausalLM, AutoTokenizer),
+    "alpaca-lora": (None, AutoModelForCausalLM, AutoTokenizer),
     "bert": (BertConfig, AutoModelForCausalLM, BertTokenizer),
     "bert-qa": (BertConfig, BertForMultipleChoice, BertTokenizer),
     "xlnet": (XLNetConfig, XLNetForMultipleChoice, XLNetTokenizer),
@@ -89,7 +89,6 @@ class HFModel(Model):
         self.model = self.model_class.from_pretrained(self.model_weights, config=self.model_config, **self.model_args)
         self.tokenizer = self.tokenizer_class.from_pretrained(self.model_weights, **self.tokenizer_args)
         self.tokenizer.pad_token = self.tokenizer.eos_token
-        self.tokenizer.padding_side = 'left'
 
         if self.adapter_name is not None and self.adapter_weights is not None: # PEFT model for LoRA
             adapter_config, adapter_class, _ = MODEL_CLASSES[self.adapter_name]

@@ -12,3 +12,4 @@ model_args:
   device_map: "auto"
 tokenizer_args:
   add_eos_token: true
+  padding_side: 'left'

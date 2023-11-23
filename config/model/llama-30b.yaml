@@ -6,3 +6,6 @@ max_new_tokens: 128
 load_config: false
 model_args:
   device_map: "auto"
+tokenizer_args:
+  add_eos_token: true
+  padding_side: 'left'

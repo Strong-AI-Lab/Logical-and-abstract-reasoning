@@ -5,6 +5,7 @@ import yaml
 from tqdm import tqdm
 import datetime
 import time
+import os
 
 from torch.utils.data import DataLoader
 
@@ -58,6 +59,7 @@ def main():
 
     # Initialize loggers
     logger_name = f"{model_config['model_name']}_{data_config['dataset_name']}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    os.makedirs("logs", exist_ok=True)
     csv_logger = CSVLogger(f"logs/results_{logger_name}.csv")
     loggers = LoggerManager([csv_logger])
 

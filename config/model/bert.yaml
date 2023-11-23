@@ -3,3 +3,5 @@ model_name: "bert"
 model_weights: "bert-base-uncased"
 task: "open_qa"
 max_new_tokens: 12
+tokenizer_args:
+  padding_side: 'right'
