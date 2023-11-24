@@ -1,0 +1,5 @@
+
+model_name: "gpt-4"
+task: "open_qa"
+wrapper: "self-refinement"
+max_tokens: 1024

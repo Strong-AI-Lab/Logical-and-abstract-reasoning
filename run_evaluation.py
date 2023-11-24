@@ -9,7 +9,7 @@ import os
 
 from torch.utils.data import DataLoader
 
-from src.models.loader import loadModel
+from src.models.loader import loadModel, HFModel
 from src.dataset.loader import loadDataset
 from src.logging.logger import LoggerManager, WandbLogger, CSVLogger
 from src.evaluate.evaluator import Evaluator
@@ -71,7 +71,8 @@ def main():
 
     # Load model
     model = loadModel(**{**model_config, **kwargs})
-    model.model.eval()
+    if isinstance(model, HFModel):
+        model.model.eval()
 
     # Load evaluation dataset
     data = loadDataset(**{**data_config, **kwargs})

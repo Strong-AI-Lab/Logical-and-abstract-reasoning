@@ -2,4 +2,5 @@
 model_name: "gpt-2"
 model_weights: "gpt2"
 task: "algo"
+wrapper: "algo"
 max_new_tokens: 256

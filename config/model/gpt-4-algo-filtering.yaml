@@ -1,5 +1,5 @@
 
 model_name: "gpt-4"
 task: "algo"
-wrapper: "algo"
+wrapper: "algo-filtering"
 max_tokens: 512
