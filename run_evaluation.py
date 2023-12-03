@@ -58,7 +58,7 @@ def main():
         data_config = yaml.safe_load(data_config_file)
 
     # Initialize loggers
-    logger_name = f"{model_config['model_name']}_{data_config['dataset_name']}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    logger_name = f"{model_config['model_name']}{'' if 'wrapper' not in model_config else '_' + model_config['wrapper']}_{data_config['dataset_name']}{'' if 'name_kwargs' not in kwargs else '_' + kwargs['name_kwargs']}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     os.makedirs("logs", exist_ok=True)
     csv_logger = CSVLogger(f"logs/results_{logger_name}.csv")
     loggers = LoggerManager([csv_logger])

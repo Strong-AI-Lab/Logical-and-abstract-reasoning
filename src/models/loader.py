@@ -9,6 +9,7 @@ from .self_refinement import SelfFilteringWrapper, SelfRefinementWrapper
 MODELS = {
     "gpt-2": HFModel,
     "gpt-4": GPTModelChat,
+    "gpt-4-1106-preview": GPTModelChat,
     "gpt-3.5-turbo": GPTModelChat,
     "text-davinci-003": GPTModelCompletion,
     "alpaca": HFModel,
