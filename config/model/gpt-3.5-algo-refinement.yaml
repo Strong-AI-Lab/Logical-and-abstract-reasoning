@@ -1,0 +1,6 @@
+
+model_name: "gpt-3.5-turbo"
+task: "algo"
+wrapper: "algo-refinement"
+max_tokens: 512
+nb_trials: 4
