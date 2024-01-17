@@ -1,0 +1,11 @@
+
+model_name: "llama2"
+model_weights: "/data/shared/llama2/llama-2-7b-chat-weights/"
+task: "open_qa"
+max_new_tokens: 50
+model_args:
+  load_in_8bit: True
+  device_map: "auto"
+tokenizer_args:
+  add_eos_token: true  # for fine-tuning
+  padding_side: 'left'

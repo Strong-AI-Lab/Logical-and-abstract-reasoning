@@ -1,6 +1,7 @@
 
 import json
 from typing import Callable
+import random
 
 from torch.utils.data import IterableDataset
 import datasets
@@ -66,8 +67,8 @@ class FineTuningDatasetWrapper():
         self.max_length = int(max_length)
 
     def _gen(self):
-        for value in self.dataset:
-            input, label = self.tokenize(value, format_labels=True, padding="max_length", max_length=self.max_length)
+        for sample in self.dataset:
+            input, label = self.tokenize(sample, format_labels=True, padding="max_length", max_length=self.max_length)
             if isinstance(label, dict) or isinstance(label, transformers.tokenization_utils_base.BatchEncoding):
                 label = label["input_ids"][0]
             else:

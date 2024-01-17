@@ -65,7 +65,7 @@ We use the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://gith
   </tr >
   
   <tr>
-      <th rowspan="8" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
+      <th rowspan="9" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
       <td align="center">MERIt</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
@@ -95,6 +95,13 @@ We use the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://gith
       <td align="center">Open source very large language model</td>
   </tr>
   <tr>
+      <td align="center">LLaMA2</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://arxiv.org/abs/2307.09288">paper</a> <br /> <a href="https://huggingface.co/docs/transformers/main/model_doc/llama2">code</a>  </td>
+      <td align="center">Open source very large language model</td>
+  </tr>
+  <tr>
       <td align="center">Alpaca</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
@@ -120,7 +127,14 @@ We use the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://gith
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
       <td align="center"> <a href="https://arxiv.org/abs/2303.08774">paper</a> <br/><a href="https://openai.com/product/gpt-4">project</a> </td>
-      <td align="center">Waiting for API</td>
+      <td align="center">Use api to do prompt tuning</td>
+  </tr>
+  <tr>
+      <td align="center">Zephyr-7b-beta</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://huggingface.co/HuggingFaceH4/zephyr-7b-beta">code</a> </td>
+      <td align="center">Fine-tuned Mistral-7b</td>
   </tr>
 </table>
 

@@ -5,10 +5,11 @@ import yaml
 from tqdm import tqdm
 import datetime
 import time
+import os
 
 from torch.utils.data import DataLoader
 
-from src.models.loader import loadModel
+from src.models.loader import loadModel, HFModel
 from src.dataset.loader import loadDataset
 from src.logging.logger import LoggerManager, WandbLogger, CSVLogger
 from src.evaluate.evaluator import Evaluator
@@ -57,7 +58,8 @@ def main():
         data_config = yaml.safe_load(data_config_file)
 
     # Initialize loggers
-    logger_name = f"{model_config['model_name']}_{data_config['dataset_name']}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    logger_name = f"{model_config['model_name']}{'' if 'wrapper' not in model_config else '_' + model_config['wrapper']}_{data_config['dataset_name']}{'' if 'name_kwargs' not in kwargs else '_' + kwargs['name_kwargs']}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    os.makedirs("logs", exist_ok=True)
     csv_logger = CSVLogger(f"logs/results_{logger_name}.csv")
     loggers = LoggerManager([csv_logger])
 
@@ -69,6 +71,8 @@ def main():
 
     # Load model
     model = loadModel(**{**model_config, **kwargs})
+    if isinstance(model, HFModel):
+        model.model.eval()
 
     # Load evaluation dataset
     data = loadDataset(**{**data_config, **kwargs})
@@ -98,7 +102,15 @@ def main():
     loggers.end_logging()
 
     # Extract metrics
-    evaluator = Evaluator(csv_logger.save_path, pos_tagging=(True if ("pos_tagging" in kwargs or "pos_tagging" in data_config) else False), code=(True if model_config["task"] == "algo" else False))
+    evaluator_arg_names = ["strict", "num", "lt", "pos_tagging", "code", "test_compiled", "force_code_run", "multiple_choices", "arrow", "cot", "keywords", "keywords_cot", "select_ans", "answer_type"]
+    evaluator_kwargs = {}
+    for arg_name in evaluator_arg_names:
+        if arg_name in kwargs:
+            evaluator_kwargs[arg_name] = kwargs[arg_name]
+        elif arg_name in data_config:
+            evaluator_kwargs[arg_name] = data_config[arg_name]
+            
+    evaluator = Evaluator(csv_logger.save_path, **evaluator_kwargs)
     results = evaluator.get_results()
     print(f"Results: {results}")
     acc, *res = evaluator.get_accuracy()

@@ -1,0 +1,4 @@
+
+dataset_name: "ACRE"
+dataset_path: "data/ACRE/text/IID/test_cot.jsonl"
+task: "mc_qa"

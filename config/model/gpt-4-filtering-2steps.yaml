@@ -1,0 +1,6 @@
+
+model_name: "gpt-4-1106-preview"
+task: "open_qa"
+wrapper: "self-filtering"
+max_tokens: 1024
+nb_generations: 2

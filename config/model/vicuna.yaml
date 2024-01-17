@@ -3,5 +3,7 @@ model_name: "vicuna"
 model_weights: "/data/Vicuna/7B/"
 task: "open_qa"
 max_new_tokens: 128
-model_config_args:
-  vocab_size: 32000
+model_args:
+  device_map: "auto"
+tokenizer_args:
+  padding_side: 'left'

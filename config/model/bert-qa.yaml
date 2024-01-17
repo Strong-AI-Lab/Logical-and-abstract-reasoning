@@ -2,3 +2,5 @@
 model_name: "bert-qa"
 model_weights: "bert-base-uncased"
 task: "mc_qa"
+tokenizer_args:
+  padding_side: 'right'

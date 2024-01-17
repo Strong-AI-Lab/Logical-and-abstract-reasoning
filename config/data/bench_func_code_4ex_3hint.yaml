@@ -1,0 +1,4 @@
+
+dataset_name: "BENCH"
+dataset_path: "data/Big-bench/Functions/symbolic_hint/task_4ex_3hint.jsonl"
+task: "open_qa"

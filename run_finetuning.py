@@ -5,8 +5,9 @@ import yaml
 import datetime
 
 import torch
-from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
+from transformers import TrainingArguments, Trainer
 import evaluate
+from peft import get_peft_config, get_peft_model, prepare_model_for_int8_training
 
 from src.models.loader import loadModel
 from src.models.hf import HFModel
@@ -46,7 +47,7 @@ def parse_args():
 
 
 # Subclass of trainer to avoid OOM on large datasets, ispired by: <https://github.com/huggingface/transformers/issues/7232#issuecomment-694936634>
-class MemSaveTrainer(Seq2SeqTrainer):
+class MemSaveTrainer(Trainer):
     def __init__(self, *args, eval_device : str = 'cpu', **kwargs):
         super().__init__(*args, **kwargs)
         self.eval_device = eval_device
@@ -89,6 +90,14 @@ def main():
     model = loadModel(**{**model_config, **kwargs})
     if not isinstance(model, HFModel):
         raise ValueError("Only HFModel supported for finetuning.")
+    
+    # Convert to PEFT for LoRA
+    if "peft" in trainer_config:
+        print(f"Fine-tuning using PEFT: peft_type={trainer_config['peft']['peft_type']}, task_type={trainer_config['peft']['task_type']}")
+        peft_config = get_peft_config(trainer_config["peft"])
+        model.model = prepare_model_for_int8_training(model.model) # Add this for using int8
+        model.model = get_peft_model(model.model, peft_config)
+
 
     # Load evaluation dataset
     data = loadDataset(**{**data_config, **kwargs})
@@ -100,9 +109,9 @@ def main():
     elif "eval_device" in kwargs:
         trainer_class = lambda *_args, **_kwargs : MemSaveTrainer(*_args, eval_device=kwargs.eval_device,  **_kwargs)
     else:
-        trainer_class = Seq2SeqTrainer
+        trainer_class = Trainer
 
-    training_args = Seq2SeqTrainingArguments(**trainer_config["training_arguments"])
+    training_args = TrainingArguments(**trainer_config["training_arguments"])
     
     trainer = trainer_class(
         model=model.model,
@@ -116,6 +125,7 @@ def main():
 
     save_path = f"fine-tuning-saves/fine-tuned-{model_config['model_name']}-{data_config['dataset_name']}-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     trainer.save_model(save_path)
+    model.model.save_pretrained(save_path)
     model.tokenizer.save_pretrained(save_path)
 
 

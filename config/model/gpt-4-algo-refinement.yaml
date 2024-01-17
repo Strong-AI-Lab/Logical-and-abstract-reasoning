@@ -1,0 +1,6 @@
+
+model_name: "gpt-4-1106-preview"
+task: "algo"
+wrapper: "algo-refinement"
+max_tokens: 512
+nb_trials: 4

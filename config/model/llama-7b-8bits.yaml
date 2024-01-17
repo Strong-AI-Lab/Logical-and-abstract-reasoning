@@ -1,0 +1,17 @@
+
+model_name: "llama"
+model_weights: "/data/shared/llama/7B/"
+task: "open_qa"
+max_new_tokens: 50
+# model_config_args:
+#   fsdp_transformer_layer_cls_to_wrap: "LLaMADecoderLayer"
+# load_config: false
+# model_config_args:
+#   vocab_size: 32001
+model_args:
+  load_in_8bit: True
+  device_map: "auto"
+  # device_map: {'model.embed_tokens': 0, 'model.layers.0': 0, 'model.layers.1': 0, 'model.layers.2': 0, 'model.layers.3': 0, 'model.layers.4': 0, 'model.layers.5': 0, 'model.layers.6': 0, 'model.layers.7': 0, 'model.layers.8': 0, 'model.layers.9': 0, 'model.layers.10': 0, 'model.layers.11': 0, 'model.layers.12': 0, 'model.layers.13': 0, 'model.layers.14': 0, 'model.layers.15': 0, 'model.layers.16': 0, 'model.layers.17': 0, 'model.layers.18': 0, 'model.layers.19': 0, 'model.layers.20': 0, 'model.layers.21': 0, 'model.layers.22': 0, 'model.layers.23': 0, 'model.layers.24': 0, 'model.layers.25': 0, 'model.layers.26': 0, 'model.layers.27': 0, 'model.layers.28': 0, 'model.layers.29': 0, 'model.layers.30': 0, 'model.layers.31': 0, 'model.norm': 0, 'lm_head': 0}
+tokenizer_args:
+  add_eos_token: true # for fine-tuning
+  padding_side: 'left'
