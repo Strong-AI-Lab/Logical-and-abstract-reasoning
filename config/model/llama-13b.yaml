@@ -7,5 +7,5 @@ load_config: false
 model_config_args:
   vocab_size: 32001
 tokenizer_args:
-  add_eos_token: true
+  add_eos_token: true  # for fine-tuning
   padding_side: 'left'

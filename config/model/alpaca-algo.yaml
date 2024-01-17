@@ -7,5 +7,4 @@ max_new_tokens: 256
 model_config_args:
   vocab_size: 32001
 tokenizer_args:
-  add_eos_token: true
   padding_side: 'left'

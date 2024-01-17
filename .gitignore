@@ -3,7 +3,7 @@ raw/
 __pycache__/
 env/
 wandb/
-logs/
+logs*/
 fine-tuning-output/
 fine-tuning-saves/
-nohup.out
+nohup.out*

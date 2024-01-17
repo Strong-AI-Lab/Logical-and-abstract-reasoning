@@ -1,0 +1,4 @@
+
+dataset_name: "RAVEN"
+dataset_path: "data/RAVEN/symbolic-open/center_single_val.jsonl"
+task: "open_qa"

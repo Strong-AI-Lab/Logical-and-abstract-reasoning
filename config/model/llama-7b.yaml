@@ -11,5 +11,5 @@ max_new_tokens: 50
 model_args:
   device_map: "auto"
 tokenizer_args:
-  add_eos_token: true
+  add_eos_token: true  # for fine-tuning
   padding_side: 'left'
