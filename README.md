@@ -65,7 +65,7 @@ We use the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://gith
   </tr >
   
   <tr>
-      <th rowspan="9" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
+      <th rowspan="10" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
       <td align="center">MERIt</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
