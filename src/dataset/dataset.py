@@ -1,6 +1,6 @@
 
 import json
-from typing import Callable
+from typing import Callable, Optional
 import random
 
 from torch.utils.data import IterableDataset
@@ -28,16 +28,43 @@ class EvalsDataset(IterableDataset):
         
     def __len__(self):
         return self.length
+    
+
+class CombinedEvalsDataset(IterableDataset):
+    
+    def __init__(self, dataset_path : list, max_size : Optional[int] = None, **kwargs):
+        self.dataset_path = dataset_path
+        self.max_size = max_size
+        self.length = sum([min(max_size, len(open(p, "r").readlines())) for p in dataset_path])
+        self.dataset_files = [open(p, "r") for p in dataset_path]
+        self.remaining_files = list(range(len(self.dataset_files)))
+        self.count = [0] * len(self.dataset_files)
+
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if len(self.remaining_files) == 0:
+            raise StopIteration("End of dataset reached.")
+        else:
+            i = random.choice(self.remaining_files)
+            line = self.dataset_files[i].readline()
+            self.count[i] += 1
+            if line and (self.max_size is None or self.count[i] < self.max_size):
+                return json.loads(line)
+            else:
+                self.remaining_files.remove(i)
+                return next(self)
+        
+    def __len__(self):
+        return self.length
 
    
 class HFDataset(IterableDataset):
     
-    def __init__(self, dataset_name : str, task : str, dataset_type : str, dataset_details : str = None, context : list = ["sentence"], **kwargs):
+    def __init__(self, dataset_name : str, task : str, dataset_type : str, dataset_details : Optional[str] = None, split : Optional[str] = None, context : list = ["sentence"], **kwargs):
         self.context = context
-        if dataset_details is None:
-            self.dataset = datasets.load_dataset(dataset_type, **kwargs)
-        else:
-            self.dataset = datasets.load_dataset(dataset_type, dataset_details, **kwargs)
+        self.dataset = datasets.load_dataset(dataset_type, name=dataset_details, split=split)
             
         self.dataset_iter = iter(self.dataset)
 
@@ -56,7 +83,7 @@ class HFDataset(IterableDataset):
             "content": data[c]
         } for c in self.context]
 
-        eval_dict = {"input" : input, "ideal" : data["label"]}
+        eval_dict = {"input" : input, "ideal" : str(data["label"])}
         return eval_dict
 
 

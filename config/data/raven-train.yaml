@@ -1,0 +1,7 @@
+
+dataset_name: "RAVEN_COMBINED"
+dataset_path: 
+  - "data/RAVEN/symbolic/center_single_train.jsonl"
+  - "data/RAVEN/text/center_single_train.jsonl"
+task: "mc_qa"
+max_size: 1000
