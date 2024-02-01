@@ -1,0 +1,4 @@
+
+dataset_name: "CORR2CAUSE_EVALS"
+dataset_path: "data/CORR2CAUSE/corr2cause-refactorization.jsonl"
+task: "mc_qa"

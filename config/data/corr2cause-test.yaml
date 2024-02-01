@@ -1,0 +1,6 @@
+
+dataset_name: "CORR2CAUSE"
+dataset_type: "causalnlp/corr2cause"
+split: "test[:640]" # do not use samples with 6 variables for memory reasons
+context: ["input"]
+task: "mc_qa"
