@@ -1,19 +1,24 @@
 
 import json
 
-from .dataset import IterableDataset, EvalsDataset, HFDataset
+from .dataset import IterableDataset, EvalsDataset, CombinedEvalsDataset, HFDataset
 
 DATASETS = {
+    "ABSTRACT_COMBINED" : CombinedEvalsDataset,
     "PVR" : EvalsDataset,
     "RAVEN" : EvalsDataset,
+    "RAVEN_COMBINED" : CombinedEvalsDataset,
     "BENCH" : EvalsDataset,
     "ACRE" : EvalsDataset,
+    "ACRE_COMBINED" : CombinedEvalsDataset,
     "ARC" : EvalsDataset,
     "DIAGRAMMATIC" : EvalsDataset,
     "LOGIC" : EvalsDataset,
     "PATTERNS" : EvalsDataset,
     "STATEMENTS" : EvalsDataset,
     "STRINGS" : EvalsDataset,
+    "CORR2CAUSE" : HFDataset,
+    "CORR2CAUSE_EVALS" : EvalsDataset,
     "MNLI" : HFDataset,
     "ReClor" : EvalsDataset,
     "LogiQA" : EvalsDataset,

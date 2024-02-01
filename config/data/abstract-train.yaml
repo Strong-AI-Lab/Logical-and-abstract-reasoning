@@ -1,0 +1,11 @@
+
+dataset_name: "ABSTRACT_COMBINED"
+dataset_path: 
+  - "data/ARC/symbolic_hard/train.jsonl"
+  - "data/PVR/symbolic/IID/train_complexity0_4ex.jsonl""
+  - "data/ACRE/text/IID/train.jsonl"
+  - "data/ACRE/symbolic/IID/train.jsonl"
+  - "data/RAVEN/symbolic/center_single_train.jsonl"
+  - "data/RAVEN/text/center_single_train.jsonl"
+task: "open_qa"
+max_size: 1000

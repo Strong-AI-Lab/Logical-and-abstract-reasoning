@@ -1,0 +1,7 @@
+
+dataset_name: "ACRE_COMBINED"
+dataset_path: 
+  - "data/ACRE/text/IID/train.jsonl"
+  - "data/ACRE/symbolic/IID/train.jsonl"
+task: "mc_qa"
+max_size: 1000
