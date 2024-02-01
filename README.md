@@ -63,7 +63,7 @@ Currently, only HuggingFace models can be fine-tuned.
   </tr >
   
   <tr>
-      <th rowspan="9" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
+      <th rowspan="10" colspan="2" align="center" valign="middle">Logical Reasoning on Reading Comprehension</th>
       <td align="center">MERIt</td>
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
@@ -97,6 +97,13 @@ Currently, only HuggingFace models can be fine-tuned.
       <td align="center">-</td>
       <td align="center">Reading Comprehension</td>
       <td align="center"> <a href="https://arxiv.org/abs/2307.09288">paper</a> <br /> <a href="https://huggingface.co/docs/transformers/main/model_doc/llama2">code</a>  </td>
+      <td align="center">Open source very large language model</td>
+  </tr>
+  <tr>
+      <td align="center">TinyLLaMA</td>
+      <td align="center">-</td>
+      <td align="center">Reading Comprehension</td>
+      <td align="center"> <a href="https://arxiv.org/abs/2401.02385">paper</a> <br /> <a href="https://huggingface.co/TinyLlama/TinyLlama-1.1B-step-50K-105b">code</a>  </td>
       <td align="center">Open source very large language model</td>
   </tr>
   <tr>
@@ -234,15 +241,6 @@ Currently, only HuggingFace models can be fine-tuned.
       <td align="center">Abstract Reasoning</td>
       <td align="center"> <a href="https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/list_functions">code</a> </td>
       <td align="center">Extracted from Google BIG-bench</td>
-  </tr>
-  
-  <tr>
-      <th rowspan="1" colspan="2" align="center" valign="middle">Visual Abstract Reasoning</th>
-      <td align="center"> ... </td>
-      <td align="center"> </td>
-      <td align="center"> </td>
-      <td align="center"> </td>
-      <td align="center"> </td>
   </tr>
 </table>
 
