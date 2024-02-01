@@ -1,0 +1,11 @@
+
+model_name: "llama"
+model_weights: "TinyLlama/TinyLlama-1.1B-step-50K-105b"
+task: "open_qa"
+max_new_tokens: 50
+model_args:
+  load_in_4bit: True
+  device_map: "auto"
+tokenizer_args:
+  add_eos_token: true  # for fine-tuning
+  padding_side: 'left'
