@@ -17,6 +17,8 @@ DATASETS = {
     "PATTERNS" : EvalsDataset,
     "STATEMENTS" : EvalsDataset,
     "STRINGS" : EvalsDataset,
+    "CORR2CAUSE" : HFDataset,
+    "CORR2CAUSE_EVALS" : EvalsDataset,
     "MNLI" : HFDataset,
     "ReClor" : EvalsDataset,
     "LogiQA" : EvalsDataset,
