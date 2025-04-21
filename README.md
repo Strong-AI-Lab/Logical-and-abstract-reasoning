@@ -1,6 +1,10 @@
 # Logical and Abstract Reasoning
 
-Repository for the evaluation of Large Language Models on logical and abstract reasoning tasks
+Repository for the evaluation of Large Language Models on logical and abstract reasoning tasks.
+
+This repository including the evaluation code for two papers.
+ - [Assessing and Enhancing the Robustness of Large Language Models with Task Structure Variations for Logical Reasoning](https://arxiv.org/abs/2310.09430) (LLM@IJCAI 2023 and ICONIP 2024)
+ - [Large language models are not strong abstract reasoners](https://dl.acm.org/doi/10.24963/ijcai.2024/693) (AGI@ICLR 2024 and IJCAI 2024)
 
 ## Installation
 
@@ -262,4 +266,33 @@ We use the LLaMA-based model fine-tuning from the [Stanford Alpaca](https://gith
 
 ## Acknowledgement
 Our proposed new dataset [logiqa-logical-reasoning-plus](https://bit.ly/3MVjZNP) has been merged by [OpenAI/Evals](https://github.com/openai/evals).
+
+
+## Citation
+
+```
+@article{bao2023assessing,
+  title={Assessing and Enhancing the Robustness of Large Language Models with Task Structure Variations for Logical Reasoning},
+  author={Bao, Qiming and Gendron, Gael and Peng, Alex Yuxuan and Zhong, Wanjun and Tan, Neset and Chen, Yang and Witbrock, Michael and Liu, Jiamou},
+  journal={arXiv preprint arXiv:2310.09430},
+  year={2023}
+}
+```
+
+```
+@inproceedings{10.24963/ijcai.2024/693,
+author = {Gendron, Ga\"{e}l and Bao, Qiming and Witbrock, Michael and Dobbie, Gillian},
+title = {Large language models are not strong abstract reasoners},
+year = {2024},
+isbn = {978-1-956792-04-1},
+url = {https://doi.org/10.24963/ijcai.2024/693},
+doi = {10.24963/ijcai.2024/693},
+abstract = {Large Language Models have shown tremendous performance on a large variety of natural language processing tasks, ranging from text comprehension to common sense reasoning. However, the mechanisms responsible for this success remain opaque, and it is unclear whether LLMs can achieve humanlike cognitive capabilities or whether these models are still fundamentally circumscribed. Abstract reasoning is a fundamental task for cognition, consisting of finding and applying a general pattern from few data. Evaluating deep neural architectures on this task could give insight into their potential limitations regarding reasoning and their broad generalisation abilities, yet this is currently an under-explored area. In this paper, we introduce a new benchmark for evaluating language models beyond memorisation on abstract reasoning tasks. We perform extensive evaluations of state-of-the-art LLMs, showing that they currently achieve very limited performance in contrast with other natural language tasks, even when applying techniques that have been shown to improve performance on other NLP tasks. We argue that guiding LLM generation to follow causal paths could help improve the generalisation and reasoning abilities of LLMs.},
+booktitle = {Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence},
+articleno = {693},
+numpages = {9},
+location = {Jeju, Korea},
+series = {IJCAI '24}
+}
+```
 
